@@ -352,7 +352,7 @@ class _SettingsPageState extends State<SettingsPage> {
       );
 
       if (response.statusCode == 200) {
-        print("Account successfull deleted.");
+        print("Account successful deleted.");
         final client = Provider.of<Client>(context, listen: false);
         final databaseService = Provider.of<DatabaseService>(context, listen: false);
         final syncManager = Provider.of<SyncManager>(context, listen: false);

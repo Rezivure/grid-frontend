@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:provider/provider.dart';
-import 'package:matrix/matrix.dart'; // Needed for Client
+import 'package:matrix/matrix.dart';
 import '../services/user_service.dart';
 
 class MatrixProfilePicture extends StatefulWidget {
@@ -52,7 +52,7 @@ class _MatrixProfilePictureState extends State<MatrixProfilePicture> {
         _avatarBytes = null;
       });
 
-      // Fetch the Uri (might be "mxc://..." or "https://...")
+
       final userService = Provider.of<UserService>(context, listen: false);
       final avatarUri = await userService.getAvatarUrl(widget.userId);
       print('Got avatarUri: $avatarUri');
@@ -68,13 +68,12 @@ class _MatrixProfilePictureState extends State<MatrixProfilePicture> {
         return;
       }
 
-      // Check if it's an MXC scheme
+
       if (avatarUri.scheme == 'mxc') {
-        // 1) Parse server name and media ID
+
         final withoutPrefix = avatarUri.toString().replaceFirst('mxc://', '');
         final parts = withoutPrefix.split('/');
         if (parts.length < 2) {
-          // If we can't parse it, just mark error
           setState(() {
             _isLoading = false;
             _hasError = true;
@@ -104,7 +103,7 @@ class _MatrixProfilePictureState extends State<MatrixProfilePicture> {
         }
 
 // 2. Verify the URL components
-        print('Server name: $serverName');  // Should be "matrix.mygrid.app"
+        print('Server name: $serverName');
         print('Media ID: $mediaId');
         final fileResponse = await client.getContent(
           serverName,

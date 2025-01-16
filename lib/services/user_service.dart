@@ -113,6 +113,15 @@ class UserService {
     }
   }
 
+  Future<Uri?> getAvatarUrl(String userId) async {
+    try {
+      return await client.getAvatarUrl(userId);
+    } catch (e) {
+      print('Error getting avatar URL: $e');
+      return null;
+    }
+  }
+
   Future<bool> isGroupInSharingWindow(String roomId) async {
     final sharingPreferences = await sharingPreferencesRepository.getSharingPreferences(roomId, 'group');
 

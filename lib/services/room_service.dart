@@ -820,6 +820,27 @@ class RoomService {
     }
   }
 
+  Future<void> setAvatar(MatrixFile? file) async {
+    try {
+      if (file == null) {
+        // We send empty string to remove avatar due to Synapse behavior
+        await client.setAvatarUrl(client.userID!, Uri.parse(''));
+        return;
+      }
+
+      final uploadResp = await client.uploadContent(
+        file.bytes,
+        filename: file.name,
+        contentType: file.mimeType,
+      );
+
+      await client.setAvatarUrl(client.userID!, uploadResp);
+    } catch (e) {
+      print('RoomService setAvatar error: $e');
+      rethrow;
+    }
+  }
+
   Future<Map<String, dynamic>> getDirectRooms() async {
     try {
       await client.sync();

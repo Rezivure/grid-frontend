@@ -250,7 +250,7 @@ class _MapTabState extends State<MapTab> with TickerProviderStateMixin, WidgetsB
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SettingsPage()),
+                    MaterialPageRoute(builder: (context) => SettingsPage(roomService: _roomService,)),
                   );
                 },
                 child: Icon(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:matrix/matrix.dart';
-import 'package:random_avatar/random_avatar.dart';
 import '../../services/sync_manager.dart';
+import '../../widgets/matrix_profile_picture.dart';
 import '/services/database_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grid_frontend/services/location_manager.dart';
@@ -11,10 +11,19 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:grid_frontend/providers/auth_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:image_picker/image_picker.dart';
+import 'package:grid_frontend/services/room_service.dart';
 
 
 class SettingsPage extends StatefulWidget {
+  final RoomService roomService;
+
+  const SettingsPage({
+  Key? key,
+  required this.roomService,
+  }) : super(key: key);
+
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }
@@ -30,6 +39,10 @@ class _SettingsPageState extends State<SettingsPage> {
   String? _username;
   String? _displayName;
   bool _isEditingDisplayName = false;
+  bool _isUpdatingAvatar = false;
+  RoomService get roomService => widget.roomService;
+
+  final ImagePicker _picker = ImagePicker();
 
 
   @override
@@ -55,6 +68,44 @@ class _SettingsPageState extends State<SettingsPage> {
         _username = 'Unknown User';
         _displayName = 'Unknown User';
       });
+    }
+  }
+
+  Future<void> updateAvatar({required ImageSource source}) async {
+    try {
+      // Pick and prepare image
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+
+      if (pickedFile == null) return;
+
+      // Convert to MatrixFile
+      final bytes = await pickedFile.readAsBytes();
+      final filename = pickedFile.name;
+      final matrixFile = MatrixFile(
+        bytes: bytes,
+        name: filename,
+        mimeType: 'image/${filename.split('.').last}',
+      );
+
+      // Use RoomService to handle the Matrix client interaction
+      await roomService.setAvatar(matrixFile);
+    } catch (e) {
+      print('AvatarService updateAvatar error: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> removeAvatar() async {
+    try {
+      await roomService.setAvatar(null);
+    } catch (e) {
+      print('AvatarService removeAvatar error: $e');
+      rethrow;
     }
   }
 
@@ -118,14 +169,156 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildAvatar(String username) {
-    return CircleAvatar(
-      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-      child: RandomAvatar(username, height: 80.0, width: 80.0), // Increased size
-      radius: 50,  // Slightly larger radius
-    );
+    // If _userID is still null, show a spinner or placeholder
+    if (_userID == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+          return Stack(
+            children: [
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  MatrixProfilePicture(
+                    userId: _userID!, // using _userID instead of username
+                    radius: 50,
+                  ),
+                  if (_isUpdatingAvatar)
+                    Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.5),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: PopupMenuButton<String>(
+                  offset: Offset(0, 10),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  itemBuilder: (BuildContext context) =>
+                  [
+                    PopupMenuItem<String>(
+                      value: 'gallery',
+                      child: Row(
+                        children: [
+                          Icon(Icons.photo_library,
+                              color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .onSurface),
+                          SizedBox(width: 12),
+                          Text('Choose from gallery'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'camera',
+                      child: Row(
+                        children: [
+                          Icon(Icons.camera_alt,
+                              color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .onSurface),
+                          SizedBox(width: 12),
+                          Text('Take a photo'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'remove',
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete,
+                              color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .error),
+                          SizedBox(width: 12),
+                          Text('Remove photo',
+                              style: TextStyle(color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .error)),
+                        ],
+                      ),
+                    ),
+                  ],
+                  onSelected: (String value) async {
+                    if (_isUpdatingAvatar)
+                      return; // Prevent multiple simultaneous updates
+
+                    try {
+                      setState(() => _isUpdatingAvatar = true);
+
+                      switch (value) {
+                        case 'gallery':
+                          await updateAvatar(source: ImageSource.gallery);
+                          break;
+                        case 'camera':
+                          await updateAvatar(source: ImageSource.camera);
+                          break;
+                        case 'remove':
+                          await removeAvatar();
+                          break;
+                      }
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Avatar updated successfully')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Failed to update avatar: $e'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    } finally {
+                      setState(() => _isUpdatingAvatar = false);
+                    }
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Theme
+                          .of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.9),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme
+                            .of(context)
+                            .scaffoldBackgroundColor,
+                        width: 2,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.camera_alt,
+                      size: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
   }
 
-  // In SettingsPage, update the _logout method:
 
   Future<void> _logout() async {
     final client = Provider.of<Client>(context, listen: false);

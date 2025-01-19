@@ -40,7 +40,7 @@ class _MapTabState extends State<MapTab> with TickerProviderStateMixin, WidgetsB
 
   bool _isMapReady = false;
   bool _followUser = true;
-  double _zoom = 18;
+  final double _zoom = 18;
 
   VectorTileProvider? _tileProvider;
   late vector_renderer.Theme _mapTheme;

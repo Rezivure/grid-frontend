@@ -34,7 +34,7 @@ class ContactsSubscreen extends StatefulWidget {
 }
 
 class ContactsSubscreenState extends State<ContactsSubscreen> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   Timer? _timer;
   bool _isRefreshing = false;
 

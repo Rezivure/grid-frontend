@@ -36,7 +36,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
   // Create Group variables
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _memberInputController = TextEditingController();
-  List<String> _members = [];
+  final List<String> _members = [];
   double _sliderValue = 1;
   bool _isForever = false;
   String? _usernameError;

@@ -46,9 +46,9 @@ class GroupDetailsSubscreen extends StatefulWidget {
 
 class _GroupDetailsSubscreenState extends State<GroupDetailsSubscreen> {
   bool _isLeaving = false;
-  bool _isProcessing = false;
-  bool _isRefreshing = false;
-  bool _isInitialLoad = true;
+  final bool _isProcessing = false;
+  final bool _isRefreshing = false;
+  final bool _isInitialLoad = true;
 
 
   final TextEditingController _searchController = TextEditingController();

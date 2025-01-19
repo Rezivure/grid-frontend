@@ -24,8 +24,8 @@ class _SettingsPageState extends State<SettingsPage> {
 
   String? deviceID;
   String? identityKey;
-  String _selectedProxy = 'None';
-  TextEditingController _customProxyController = TextEditingController();
+  final String _selectedProxy = 'None';
+  final TextEditingController _customProxyController = TextEditingController();
   bool _incognitoMode = false;
 
 

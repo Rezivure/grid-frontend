@@ -476,7 +476,7 @@ class RoomService {
       for (String id in userIds) {
         if (id != effectiveUserId) {
           id = id.toLowerCase();
-          var fullUsername = '@' + id + ':' + client.homeserver.toString().replaceFirst('https://', '');
+          var fullUsername = '@$id:${client.homeserver.toString().replaceFirst('https://', '')}';
           await client.inviteUser(roomId, fullUsername);
         }
       }

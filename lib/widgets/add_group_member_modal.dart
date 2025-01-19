@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grid_frontend/utilities/utils.dart';
@@ -181,7 +183,7 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
       _matrixUserId = null;
 
     } catch (e) {
-      print('Error adding member: $e');
+      log('Error adding member', error: e);
       if (mounted) {
         setState(() {
           _contactError = 'Failed to send invite. Do you have permissions?';
@@ -209,7 +211,7 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
     controller.scannedDataStream.listen((scanData) async {
       if (!hasScanned) {
         String scannedUserId = scanData.code ?? '';
-        print('Scanned QR Code: $scannedUserId');
+        log('Scanned QR Code: $scannedUserId');
 
         if (scannedUserId.isNotEmpty) {
           hasScanned = true;
@@ -224,7 +226,7 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
           });
           _addMember();
         } else {
-          print('QR Code data is empty');
+          log('QR Code data is empty');
         }
       }
     });

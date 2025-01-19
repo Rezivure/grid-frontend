@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,7 +104,7 @@ class _MapTabState extends State<MapTab> with TickerProviderStateMixin, WidgetsB
       context.read<MapBloc>().add(MapInitialize());
       setState(() {});
     } catch (e) {
-      print('Error loading map provider: $e');
+      log('Error loading map provider', error: e);
       _showMapErrorDialog();
     }
   }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:grid_frontend/models/room.dart';
 import 'package:grid_frontend/services/database_service.dart';
@@ -192,7 +194,7 @@ class RoomRepository {
             whereArgs: [affectedUserId],
           );
 
-          print('Deleted orphaned user: $affectedUserId');
+          log('Deleted orphaned user: $affectedUserId');
         }
       }
     });

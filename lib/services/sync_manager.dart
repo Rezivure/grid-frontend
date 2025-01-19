@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grid_frontend/repositories/location_repository.dart';
@@ -67,19 +69,19 @@ class SyncManager with ChangeNotifier {
   Future<void> _loadSinceToken() async {
     final prefs = await SharedPreferences.getInstance();
     _sinceToken = prefs.getString('syncSinceToken');
-    print('[SyncManager] Loaded since token: $_sinceToken');
+    log('[SyncManager] Loaded since token: $_sinceToken');
   }
 
   Future<void> _saveSinceToken(String token) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('syncSinceToken', token);
-    print('[SyncManager] Saved since token: $token');
+    log('[SyncManager] Saved since token: $token');
   }
 
   Future<void> initialize() async {
     if (_isInitialized) return;
 
-    print("Initializing Sync Manager...");
+    log("Initializing Sync Manager...");
     try {
       await _loadSinceToken();
       await roomService.cleanRooms();
@@ -99,7 +101,7 @@ class SyncManager with ChangeNotifier {
       await startSync();
       _isInitialized = true; // Only set after successful completion
     } catch (e) {
-      print("Error during initialization: $e");
+      log("Error during initialization", error: e);
       // Maybe add some retry logic here
     }
   }
@@ -119,12 +121,12 @@ class SyncManager with ChangeNotifier {
 
       // Process room messages and joins
       syncUpdate.rooms?.join?.forEach((roomId, joinedRoomUpdate) {
-        print("Got join update for room: $roomId");
+        log("Got join update for room: $roomId");
         _processRoomMessages(roomId, joinedRoomUpdate);
 
         // Check if there are any state events before processing
         if ((joinedRoomUpdate.state ?? []).isNotEmpty) {
-          print("Found state events, processing join");
+          log("Found state events, processing join");
           _processRoomJoin(roomId, joinedRoomUpdate);
         }
       });
@@ -146,7 +148,7 @@ class SyncManager with ChangeNotifier {
       client.sync(fullState: true, timeout: 10000).then((_) {
         mapBloc.add(MapLoadUserLocations()); // Refresh locations
       }).catchError((e) {
-        print('Error during resume sync: $e');
+        log('Error during resume sync', error: e);
       });
     }
   }
@@ -200,7 +202,7 @@ class SyncManager with ChangeNotifier {
         );
 
         if (otherUserId.isNotEmpty) {
-          print("Processing complete removal for user: $otherUserId");
+          log("Processing complete removal for user: $otherUserId");
 
           // Check if user exists in any other rooms
           final userRooms = await roomRepository.getUserRooms(otherUserId);
@@ -211,7 +213,7 @@ class SyncManager with ChangeNotifier {
 
           // If user isn't in any other rooms, clean up all their data
           if (userRooms.length <= 1) {  // <= 1 because current room is still counted
-            print("User not in any other rooms, removing completely");
+            log("User not in any other rooms, removing completely");
             await locationRepository.deleteUserLocations(otherUserId);
             await userRepository.deleteUser(otherUserId);
           }
@@ -220,11 +222,11 @@ class SyncManager with ChangeNotifier {
           mapBloc.add(RemoveUserLocation(otherUserId));
           contactsBloc.add(RefreshContacts());
 
-          print('Completed cleanup for user $otherUserId');
+          log('Completed cleanup for user $otherUserId');
         }
       }
     } catch (e) {
-      print('Error processing room leave: $e');
+      log('Error processing room leave', error: e);
     }
   }
 
@@ -250,7 +252,7 @@ class SyncManager with ChangeNotifier {
         final hasDirectRoom = await userRepository.getDirectRoomForContact(participantId);
 
         if (userRooms.isEmpty && hasDirectRoom == null) {
-          print("Cleaning up user completely: $participantId");
+          log("Cleaning up user completely: $participantId");
           await locationRepository.deleteUserLocations(participantId);
           await userRepository.deleteUser(participantId);
           userLocationProvider.removeUserLocation(participantId);
@@ -275,9 +277,9 @@ class SyncManager with ChangeNotifier {
         mapBloc.add(MapLoadUserLocations());
       });
 
-      print("Completed kick cleanup for room: $roomId");
+      log("Completed kick cleanup for room: $roomId");
     } catch (e) {
-      print('Error handling kicked from room: $e');
+      log('Error handling kicked from room', error: e);
     }
   }
 
@@ -302,7 +304,7 @@ class SyncManager with ChangeNotifier {
       if (room == null) return;
 
       if (wasKicked) {
-        print("User was kicked from room $roomId by $kickedBy");
+        log("User was kicked from room $roomId by $kickedBy");
 
         // Immediately clear from local storage
         await roomRepository.deleteRoom(roomId);
@@ -319,7 +321,7 @@ class SyncManager with ChangeNotifier {
         await _processRoomLeave(roomId, leftRoomUpdate);
       }
     } catch (e) {
-      print('Error processing room leave/kick: $e');
+      log('Error processing room leave/kick', error: e);
 
       // Even if we get an error, try to clean up local data
       try {
@@ -328,7 +330,7 @@ class SyncManager with ChangeNotifier {
         groupsBloc.add(RefreshGroups());
         groupsBloc.add(LoadGroups());
       } catch (cleanupError) {
-        print('Error during emergency cleanup: $cleanupError');
+        log('Error during emergency cleanup', error: cleanupError);
       }
     }
   }
@@ -360,7 +362,7 @@ class SyncManager with ChangeNotifier {
             event: event,
           ));
         } else {
-          print("Error processing event ${event.eventId}: $e");
+          log("Error processing event ${event.eventId}", error: e);
         }
       });
     }
@@ -369,7 +371,7 @@ class SyncManager with ChangeNotifier {
   Future<void> _processPendingMessages() async {
     if (_pendingMessages.isEmpty) return;
 
-    print("Processing ${_pendingMessages.length} pending messages");
+    log("Processing ${_pendingMessages.length} pending messages");
 
     final messagesToProcess = List<PendingMessage>.from(_pendingMessages);
     _pendingMessages.clear();
@@ -384,13 +386,13 @@ class SyncManager with ChangeNotifier {
           notifyListeners();
         }
       }).catchError((e) {
-        print("Error processing pending event ${pendingMessage.eventId}: $e");
+        log("Error processing pending event ${pendingMessage.eventId}", error: e);
       });
     }
   }
 
   Future<void> handleNewGroupCreation(String roomId) async {
-    print("SyncManager: Handling new group creation for room $roomId");
+    log("SyncManager: Handling new group creation for room $roomId");
 
     try {
       final matrixRoom = client.getRoomById(roomId);
@@ -403,7 +405,7 @@ class SyncManager with ChangeNotifier {
 
         // Verify room was processed
         final processedRoom = await roomRepository.getRoomById(roomId);
-        print("Room processed status: ${processedRoom != null}");
+        log("Room processed status: ${processedRoom != null}");
 
         // Force immediate refresh
         groupsBloc.add(RefreshGroups());
@@ -426,15 +428,15 @@ class SyncManager with ChangeNotifier {
         });
       }
     } catch (e) {
-      print("Error in handleNewGroupCreation: $e");
+      log("Error in handleNewGroupCreation", error: e);
     }
   }
 
   Future<void> _processRoomJoin(String roomId, JoinedRoomUpdate joinedRoomUpdate) async {
     try {
-      print("Processing room join for room: $roomId");
+      log("Processing room join for room: $roomId");
       final stateEvents = joinedRoomUpdate.state ?? [];
-      print("Found ${stateEvents.length} state events");
+      log("Found ${stateEvents.length} state events");
 
       // First pass: Check if this is an initial room join
       bool isInitialJoin = false;
@@ -463,7 +465,7 @@ class SyncManager with ChangeNotifier {
 
       // If it's an initial join, process the full room
       if (isInitialJoin) {
-        print("Processing initial room join");
+        log("Processing initial room join");
         final matrixRoom = client.getRoomById(roomId);
         if (matrixRoom != null) {
           final room = await roomRepository.getRoomById(roomId);
@@ -485,7 +487,7 @@ class SyncManager with ChangeNotifier {
 
       // Second pass: Process individual state events
       for (var event in stateEvents) {
-        print("Processing event type: ${event.type}");
+        log("Processing event type: ${event.type}");
         if (event.type == 'm.room.member') {
           // Don't process member events for kicked users
           final membershipStatus = event.content['membership'] as String?;
@@ -505,12 +507,12 @@ class SyncManager with ChangeNotifier {
         }
       }
     } catch (e) {
-      print('Error processing room join: $e');
+      log('Error processing room join', error: e);
     }
   }
 
   Future<void> _processMemberStateEvent(String roomId, MatrixEvent event) async {
-    print("Processing member event: ${event.stateKey} with content: ${event.content}");
+    log("Processing member event: ${event.stateKey} with content: ${event.content}");
 
     final room = await roomRepository.getRoomById(roomId);
     if (room == null) return;
@@ -539,7 +541,7 @@ class SyncManager with ChangeNotifier {
             );
             await userRepository.insertUser(gridUser);
           } catch (e) {
-            print('Error fetching profile for invited user ${event.stateKey}: $e');
+            log('Error fetching profile for invited user ${event.stateKey}', error: e);
           }
         }
       }
@@ -572,11 +574,11 @@ class SyncManager with ChangeNotifier {
           if (room.isGroup) {
             groupsBloc.add(UpdateGroup(roomId));
           } else {
-            print("Direct room join detected, refreshing contacts");
+            log("Direct room join detected, refreshing contacts");
             contactsBloc.add(RefreshContacts());
           }
         } catch (e) {
-          print('Error updating user profile for ${event.stateKey}: $e');
+          log('Error updating user profile for ${event.stateKey}', error: e);
         }
       } else if (membershipStatus == 'leave') {
         await _handleMemberLeave(roomId, event.stateKey);
@@ -587,7 +589,7 @@ class SyncManager with ChangeNotifier {
   Future<void> _handleMemberLeave(String roomId, String? userId) async {
     if (userId == null || userId == client.userID) return;
 
-    print("Processing leave for user: $userId in room: $roomId");
+    log("Processing leave for user: $userId in room: $roomId");
     final room = await roomRepository.getRoomById(roomId);
 
     if (room != null) {
@@ -620,7 +622,7 @@ class SyncManager with ChangeNotifier {
           final hasDirectRoom = await userRepository.getDirectRoomForContact(userId);
 
           if (userRooms.isEmpty && hasDirectRoom == null) {
-            print("User not in any other rooms/contacts, cleaning up completely");
+            log("User not in any other rooms/contacts, cleaning up completely");
             await locationRepository.deleteUserLocations(userId);
             await userRepository.deleteUser(userId);
             mapBloc.add(RemoveUserLocation(userId));
@@ -638,7 +640,7 @@ class SyncManager with ChangeNotifier {
           });
 
         } catch (e) {
-          print('Error processing group member leave: $e');
+          log('Error processing group member leave', error: e);
         }
       } else {
         // Handle direct room cleanup
@@ -703,11 +705,11 @@ class SyncManager with ChangeNotifier {
     if (existingRoom == null) {
       // Insert new room
       await roomRepository.insertRoom(customRoom);
-      print('Inserted new room: ${room.id}');
+      log('Inserted new room: ${room.id}');
     } else {
       // Update existing room
       await roomRepository.updateRoom(customRoom);
-      print('Updated existing room: ${room.id}');
+      log('Updated existing room: ${room.id}');
     }
 
     // Sync participants
@@ -744,12 +746,12 @@ class SyncManager with ChangeNotifier {
 
         final customRoom = await roomRepository.getRoomById(room.id);
         if (customRoom?.isGroup ?? false) {
-          print('Updating group in bloc: ${room.id}');
+          log('Updating group in bloc: ${room.id}');
           groupsBloc.add(UpdateGroup(room.id));
         }
-        print('Processed user ${participantId} in room ${room.id}');
+        log('Processed user ${participantId} in room ${room.id}');
       } catch (e) {
-        print('Error fetching profile for user $participantId: $e');
+        log('Error fetching profile for user $participantId', error: e);
       }
     }
 
@@ -757,7 +759,7 @@ class SyncManager with ChangeNotifier {
     for (var participant in existingParticipants) {
       if (!currentParticipants.contains(participant)) {
         await roomRepository.removeRoomParticipant(room.id, participant);
-        print('Removed participant $participant from room ${room.id}');
+        log('Removed participant $participant from room ${room.id}');
       }
     }
   }
@@ -768,7 +770,7 @@ class SyncManager with ChangeNotifier {
       final didJoin = await roomService.acceptInvitation(roomId);
 
       if (didJoin) {
-        print('Successfully joined room $roomId');
+        log('Successfully joined room $roomId');
 
         // Process the room to ensure database updates
         await roomService.updateSingleRoom(roomId);
@@ -779,15 +781,15 @@ class SyncManager with ChangeNotifier {
 
         // Trigger a full client sync to fetch all updates
         await client.sync(timeout: 10000);
-        print('Sync completed for room $roomId');
+        log('Sync completed for room $roomId');
       } else {
         throw Exception('Failed to join room');
       }
       // Remove invite since excepted
       removeInvite(roomId);
     } catch (e) {
-      print('Error during room join and sync: $e');
-      throw e; // Re-throw for error handling in calling code
+      log('Error during room join and sync', error: e);
+      rethrow; // Re-throw for error handling in calling code
     }
   }
 

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:matrix/matrix.dart';
@@ -22,11 +23,11 @@ class UserService {
 
   Future<bool> userExists(String userId) async {
     try {
-      print("Checking if $userId exists.");
+      log("Checking if $userId exists.");
       final response = await client.getUserProfile(userId);
       return response != null;
     } catch (e) {
-      print('Error checking user existence: $e');
+      log('Error checking user existence', error: e);
       return false;
     }
   }
@@ -77,7 +78,7 @@ class UserService {
       final lastSeen = DateTime.parse(lastTimestamp);
       return timeAgo(lastSeen); // Use the utility function
     } catch (e) {
-      print("Error fetching last seen time for user $userId: $e");
+      log("Error fetching last seen time for user $userId", error: e);
       return 'Offline';
     }
   }
@@ -105,7 +106,7 @@ class UserService {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Error checking username availability: $e');
+      log('Error checking username availability', error: e);
       return false;
     }
   }

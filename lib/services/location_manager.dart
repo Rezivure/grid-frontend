@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
@@ -30,14 +31,14 @@ class LocationManager with ChangeNotifier {
         onStateChange: (state) {
           switch (state) {
             case AppLifecycleState.resumed:
-              print("Grid: App in foreground");
+              log("Grid: App in foreground");
               _isInForeground = true;
               _updateTrackingConfig();
               break;
             case AppLifecycleState.paused:
             case AppLifecycleState.inactive:
             case AppLifecycleState.detached:
-              print("Grid: App in background");
+              log("Grid: App in background");
               _isInForeground = false;
               _updateTrackingConfig();
               break;
@@ -52,7 +53,7 @@ class LocationManager with ChangeNotifier {
     if (!_isTracking) return;
 
     if (_isInForeground) {
-      print("Grid: Applying foreground config");
+      log("Grid: Applying foreground config");
       bg.BackgroundGeolocation.setConfig(bg.Config(
         desiredAccuracy: bg.Config.DESIRED_ACCURACY_HIGH,
         distanceFilter: 0, // Important: Allow all movement updates
@@ -64,7 +65,7 @@ class LocationManager with ChangeNotifier {
         pausesLocationUpdatesAutomatically: false,
       ));
     } else {
-      print("Grid: Applying background config");
+      log("Grid: Applying background config");
       final interval = _isMoving ? _backgroundMovingInterval : _backgroundStationary;
       bg.BackgroundGeolocation.setConfig(bg.Config(
         desiredAccuracy: bg.Config.DESIRED_ACCURACY_MEDIUM,
@@ -88,11 +89,11 @@ class LocationManager with ChangeNotifier {
 
   Future<void> startTracking() async {
     if (_isTracking) {
-      print("Grid: Location tracking already started.");
+      log("Grid: Location tracking already started.");
       return;
     }
 
-    print("Grid: Initializing LocationManager...");
+    log("Grid: Initializing LocationManager...");
 
     // Request required permissions first
     if (Platform.isIOS) {
@@ -146,12 +147,12 @@ class LocationManager with ChangeNotifier {
   void _setupEventListeners() {
     // Regular location updates
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
-      print("Grid: Location update - speed: ${location.coords.speed?.toStringAsFixed(2) ?? 'unknown'} m/s");
+      log("Grid: Location update - speed: ${location.coords.speed?.toStringAsFixed(2) ?? 'unknown'} m/s");
 
       // Update motion state based on speed (walking speed ~1.4 m/s)
       if (location.coords.speed != null && location.coords.speed! > 1.4) {
         _isMoving = true;
-        print("Grid: Movement detected - speed: ${location.coords.speed} m/s");
+        log("Grid: Movement detected - speed: ${location.coords.speed} m/s");
       }
 
       _processLocation(location);
@@ -159,7 +160,7 @@ class LocationManager with ChangeNotifier {
 
     // Provider changes (location services status)
     bg.BackgroundGeolocation.onProviderChange((bg.ProviderChangeEvent event) {
-      print("Grid: Location provider changed - $event");
+      log("Grid: Location provider changed - $event");
       if (event.status == bg.ProviderChangeEvent.AUTHORIZATION_STATUS_ALWAYS) {
         startTracking();
       }
@@ -168,7 +169,7 @@ class LocationManager with ChangeNotifier {
     // Motion state changes
     bg.BackgroundGeolocation.onMotionChange((bg.Location location) {
       final isMoving = location.isMoving ?? false;
-      print("Grid: Motion state changed - Moving: $isMoving");
+      log("Grid: Motion state changed - Moving: $isMoving");
       _isMoving = isMoving;
       _updateTrackingConfig();
       _processLocation(location);
@@ -176,7 +177,7 @@ class LocationManager with ChangeNotifier {
 
     // Activity changes
     bg.BackgroundGeolocation.onActivityChange((bg.ActivityChangeEvent event) {
-      print("Grid: Activity changed - ${event.activity} (${event.confidence}%)");
+      log("Grid: Activity changed - ${event.activity} (${event.confidence}%)");
       if (event.confidence >= 75) {
         _isMoving = event.activity != 'still';
         _updateTrackingConfig();
@@ -186,11 +187,11 @@ class LocationManager with ChangeNotifier {
 
   void stopTracking() {
     if (!_isTracking) {
-      print("Grid: Location tracking is not active.");
+      log("Grid: Location tracking is not active.");
       return;
     }
 
-    print("Grid: Stopping LocationManager...");
+    log("Grid: Stopping LocationManager...");
     bg.BackgroundGeolocation.stop();
     bg.BackgroundGeolocation.removeListeners();
     _isTracking = false;
@@ -198,12 +199,12 @@ class LocationManager with ChangeNotifier {
 
   void _processLocation(bg.Location location) {
     if (!_shouldUpdateLocation(location)) {
-      print("Grid: Skipping update due to throttling");
+      log("Grid: Skipping update due to throttling");
       return;
     }
 
     final currentCoords = location.coords;
-    print("Grid: Processing location update (${_isInForeground ? 'Foreground' : 'Background'}, Moving: $_isMoving)");
+    log("Grid: Processing location update (${_isInForeground ? 'Foreground' : 'Background'}, Moving: $_isMoving)");
 
     _lastPosition = location;
     _lastUpdateTime = DateTime.now();
@@ -219,7 +220,7 @@ class LocationManager with ChangeNotifier {
 
     // Always update in foreground according to interval
     if (_isInForeground) {
-      print(timeElapsed > _foregroundInterval);
+      log((timeElapsed > _foregroundInterval).toString());
       return timeElapsed > _foregroundInterval;
     }
 

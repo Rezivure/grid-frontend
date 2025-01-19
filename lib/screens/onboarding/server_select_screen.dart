@@ -1,5 +1,5 @@
 import 'dart:async'; // Import for Timer
-import 'dart:math'; // For generating random numbers
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:random_avatar/random_avatar.dart';
@@ -280,7 +280,7 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
               setState(() {
                 _fullPhoneNumber = phone.completeNumber;
               });
-              print('Full phone number: $_fullPhoneNumber');
+              log('Full phone number: $_fullPhoneNumber');
             },
           ),
           const SizedBox(height: 20),

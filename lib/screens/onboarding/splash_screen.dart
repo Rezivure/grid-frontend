@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:matrix/matrix.dart';
@@ -26,7 +28,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     // Load the token from SharedPreferences
     String? token = await _loadFromPrefs();
-    print(token);
+    log(token ?? 'token is null');
 
     final client = Provider.of<Client>(context, listen: false);
 
@@ -36,13 +38,13 @@ class _SplashScreenState extends State<SplashScreen> {
         client.accessToken = token;
         await client.sync();
         var stat = client.isLogged();
-        print("print stat of client log:{$stat} ");
+        log("print stat of client log:{$stat} ");
         if (client.isLogged()) {
           Navigator.pushReplacementNamed(context, '/main');
           return;
         }
       } catch (e) {
-        print('Token is invalid or session expired: $e');
+        log('Token is invalid or session expired', error: e);
       }
     }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:matrix/matrix.dart';
 import 'package:grid_frontend/widgets/version_checker.dart';
@@ -31,11 +33,11 @@ class _VersionWrapperState extends State<VersionWrapper> {
   }
 
   Future<void> _checkVersion() async {
-    print('Checking version...');
+    log('Checking version...');
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = packageInfo.version;
-      print('Current version: $currentVersion');
+      log('Current version: $currentVersion');
 
       final versionCheckUrl = dotenv.env['VERSION_CHECK_URL'] ?? '';
       final response = await http.get(Uri.parse(versionCheckUrl));
@@ -44,14 +46,14 @@ class _VersionWrapperState extends State<VersionWrapper> {
         final versionInfo = json.decode(response.body);
         final minimumVersion = versionInfo['minimum_version'];
         final latestVersion = versionInfo['latest_version'];
-        print('Minimum version: $minimumVersion');
-        print('Latest version: $latestVersion');
+        log('Minimum version: $minimumVersion');
+        log('Latest version: $latestVersion');
 
         bool isCritical = VersionChecker.isVersionLower(currentVersion, minimumVersion);
         bool hasOptionalUpdate = VersionChecker.isVersionLower(currentVersion, latestVersion);
 
-        print('Needs critical update: $isCritical');
-        print('Has optional update: $hasOptionalUpdate');
+        log('Needs critical update: $isCritical');
+        log('Has optional update: $hasOptionalUpdate');
 
         if (mounted) {
           setState(() {
@@ -72,7 +74,7 @@ class _VersionWrapperState extends State<VersionWrapper> {
         }
       }
     } catch (e) {
-      print('Version check error: $e');
+      log('Version check error', error: e);
     } finally {
       if (mounted) {
         setState(() {

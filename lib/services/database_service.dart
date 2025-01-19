@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -46,9 +48,9 @@ class DatabaseService {
       final keyBytes = Key.fromSecureRandom(32);
       key = keyBytes.base64;
       await _secureStorage.write(key: 'encryptionKey', value: key);
-      print('Generated new encryption key.');
+      log('Generated new encryption key.');
     } else {
-      print('Encryption key exists.');
+      log('Encryption key exists.');
     }
   }
 
@@ -72,12 +74,12 @@ class DatabaseService {
 
   /// Delete and reinitialize the database
   Future<void> deleteAndReinitialize() async {
-    print("Deleting database...");
+    log("Deleting database...");
     final dbPath = await getDatabasesPath();
     String path = join(dbPath, 'secure_grid.db');
 
     await deleteDatabase(path);
     _database = await initDatabase();
-    print("Re-initialized db");
+    log("Re-initialized db");
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class TimeAgoFormatter {
@@ -11,7 +13,7 @@ class TimeAgoFormatter {
       final now = DateTime.now();
 
       if (lastSeenDateTime.isAfter(now)) {
-        print("Warning: Future timestamp detected: $timestamp");
+        log("Warning: Future timestamp detected: $timestamp");
         return 'Off Grid';
       }
 
@@ -31,7 +33,7 @@ class TimeAgoFormatter {
         return 'Off Grid';
       }
     } catch (e) {
-      print("Error parsing timestamp: $e");
+      log("Error parsing timestamp", error: e);
       return 'Off Grid';
     }
   }

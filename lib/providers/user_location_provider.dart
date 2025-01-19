@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:grid_frontend/models/user_location.dart';
 import 'package:grid_frontend/repositories/location_repository.dart';
@@ -36,7 +38,7 @@ class UserLocationProvider with ChangeNotifier {
       DateTime.parse(location.timestamp!);
       return location.timestamp;
     } catch (e) {
-      print("Invalid timestamp for user $userId: ${location.timestamp}");
+      log("Invalid timestamp for user $userId: ${location.timestamp}");
       return null;
     }
   }
@@ -57,7 +59,7 @@ class UserLocationProvider with ChangeNotifier {
           notifyListeners();
         }
       } catch (e) {
-        print("Error in location update listener: $e");
+        log("Error in location update listener", error: e);
       }
     });
   }
@@ -74,7 +76,7 @@ class UserLocationProvider with ChangeNotifier {
   }
 
   void debugUserLocations() {
-    print("DEBUG _userLocations: ${_userLocations.keys.toList()}");
+    log("DEBUG _userLocations: ${_userLocations.keys.toList()}");
   }
 
   void removeUserLocation(String userId) {

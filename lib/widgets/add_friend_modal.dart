@@ -1,5 +1,7 @@
 // add_friend_modal.dart
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:grid_frontend/models/room.dart';
 import 'package:grid_frontend/services/user_service.dart';
@@ -165,7 +167,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
     controller.scannedDataStream.listen((scanData) async {
       if (!hasScanned) {
         String scannedUserId = scanData.code ?? '';
-        print('Scanned QR Code: $scannedUserId');
+        log('Scanned QR Code: $scannedUserId');
 
         if (scannedUserId.isNotEmpty) {
           hasScanned = true;
@@ -177,7 +179,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
           });
           _addContact();
         } else {
-          print('QR Code data is empty');
+          log('QR Code data is empty');
         }
       }
     });

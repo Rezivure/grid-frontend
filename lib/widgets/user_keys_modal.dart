@@ -1,5 +1,7 @@
 // lib/widgets/user_keys_modal.dart
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:grid_frontend/services/database_service.dart';
@@ -25,7 +27,7 @@ class UserKeysModal extends StatelessWidget {
 
   void approveKeys(BuildContext context) async {
     try {
-      print("attemping to approve keys for ${this.userId}");
+      log("attemping to approve keys for ${this.userId}");
       await userKeysRepository.updateApprovedKeys(this.userId, true);
 
       // Notify the parent widget that keys were approved

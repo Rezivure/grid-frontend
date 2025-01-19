@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'package:sqflite/sqflite.dart';
 import 'package:grid_frontend/models/user_location.dart';
 import 'package:grid_frontend/services/database_service.dart';
@@ -41,7 +42,7 @@ class LocationRepository {
 
   /// Delete all location data for a specific user
   Future<void> deleteUserLocations(String userId) async {
-    print("Deleting location data for user: $userId");
+    log("Deleting location data for user: $userId");
     final db = await _databaseService.database;
 
     await db.delete(
@@ -50,13 +51,13 @@ class LocationRepository {
       whereArgs: [userId],
     );
 
-    print("Deleted all location data for user: $userId");
+    log("Deleted all location data for user: $userId");
   }
 
   /// Delete location data for a user, but only if they're not in any other rooms
   // In LocationRepository
   Future<bool> deleteUserLocationsIfNotInRooms(String userId) async {
-    print("Checking if we should delete location data for user: $userId");
+    log("Checking if we should delete location data for user: $userId");
     final db = await _databaseService.database;
 
     final otherRooms = await db.query(
@@ -66,16 +67,16 @@ class LocationRepository {
     );
 
     if (otherRooms.isEmpty) {
-      print("User $userId not in any rooms, deleting location data");
+      log("User $userId not in any rooms, deleting location data");
       await db.delete(
         'UserLocations',
         where: 'userId = ?',
         whereArgs: [userId],
       );
-      print("Deleted all location data for user: $userId");
+      log("Deleted all location data for user: $userId");
       return true;  // Return true if we deleted
     } else {
-      print("User $userId still in ${otherRooms.length} rooms, keeping location data");
+      log("User $userId still in ${otherRooms.length} rooms, keeping location data");
       return false;  // Return false if we kept the data
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_frontend/providers/user_location_provider.dart';
@@ -50,7 +51,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
       // Always emit a new instance of GroupsLoaded to force UI update
       emit(GroupsLoaded(List.from(_allGroups)));
     } catch (e) {
-      print("GroupsBloc: Error loading groups - $e");
+      log("GroupsBloc: Error loading groups", error: e);
       emit(GroupsError(e.toString()));
     }
   }
@@ -86,12 +87,12 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
         ));
       }
     } catch (e) {
-      print("Error refreshing group members: $e");
+      log("Error refreshing group members", error: e);
     }
   }
 
   Future<void> _onRefreshGroups(RefreshGroups event, Emitter<GroupsState> emit) async {
-    print("GroupsBloc: Handling RefreshGroups event");
+    log("GroupsBloc: Handling RefreshGroups event");
     try {
       // First emit loading state to trigger UI update
       emit(GroupsLoading());
@@ -113,7 +114,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
       }
 
     } catch (e) {
-      print("GroupsBloc: Error in RefreshGroups - $e");
+      log("GroupsBloc: Error in RefreshGroups", error: e);
       emit(GroupsError(e.toString()));
     }
   }
@@ -139,7 +140,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
         emit(GroupsLoaded(_allGroups));
       }
     } catch (e) {
-      print("GroupsBloc: Error deleting group - $e");
+      log("GroupsBloc: Error deleting group", error: e);
       emit(GroupsError(e.toString()));
     }
   }
@@ -182,7 +183,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
 
   Future<void> _onUpdateGroup(UpdateGroup event, Emitter<GroupsState> emit) async {
     try {
-      print("GroupsBloc: Handling UpdateGroup for room ${event.roomId}");
+      log("GroupsBloc: Handling UpdateGroup for room ${event.roomId}");
       final room = await roomRepository.getRoomById(event.roomId);
       if (room != null) {
         final index = _allGroups.indexWhere((g) => g.roomId == event.roomId);
@@ -193,7 +194,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
 
             // Get updated member data if this is the selected room
             if (currentState.selectedRoomId == event.roomId) {
-              print("GroupsBloc: Updating members for selected room");
+              log("GroupsBloc: Updating members for selected room");
               final members = await userRepository.getGroupParticipants();
               final filteredMembers = members.where(
                       (user) => room.members.contains(user.userId)
@@ -211,11 +212,11 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
                     user.userId,
                   );
                   membershipStatuses[user.userId] = status ?? 'join';
-                  print("GroupsBloc: Updated status for ${user.userId} to ${status ?? 'join'}");
+                  log("GroupsBloc: Updated status for ${user.userId} to ${status ?? 'join'}");
                 }),
               );
 
-              print("GroupsBloc: Emitting new state with ${filteredMembers.length} members");
+              log("GroupsBloc: Emitting new state with ${filteredMembers.length} members");
               emit(GroupsLoaded(
                 List.from(_allGroups),
                 selectedRoomId: currentState.selectedRoomId,
@@ -237,7 +238,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
         }
       }
     } catch (e) {
-      print("GroupsBloc: Error updating group - $e");
+      log("GroupsBloc: Error updating group", error: e);
     }
   }
 
@@ -307,7 +308,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
               profileStatus: "",
             ));
           } catch (e) {
-            print('Error fetching profile for invited user $userId: $e');
+            log('Error fetching profile for invited user $userId', error: e);
             // Add basic user info if profile fetch fails
             filteredMembers.add(GridUser(
               userId: userId,
@@ -340,7 +341,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
       ));
 
     } catch (e) {
-      print("Error loading group members: $e");
+      log("Error loading group members", error: e);
     } finally {
       _isUpdatingMembers = false;
     }
@@ -384,7 +385,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
       // Force a full member list refresh
       add(LoadGroupMembers(roomId));
     } catch (e) {
-      print("Error handling new member invite: $e");
+      log("Error handling new member invite", error: e);
     } finally {
       _isUpdatingMembers = false;
     }
@@ -431,7 +432,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
         }
       }
     } catch (e) {
-      print("GroupsBloc: Error updating member status - $e");
+      log("GroupsBloc: Error updating member status", error: e);
     }
   }
 
@@ -497,7 +498,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
       // Final refresh to ensure everything is in sync
       add(LoadGroupMembers(roomId));
     } catch (e) {
-      print("Error handling kicked member: $e");
+      log("Error handling kicked member", error: e);
     }
   }
 
@@ -506,7 +507,7 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
     groups.sort((a, b) =>
         DateTime.parse(b.lastActivity).compareTo(DateTime.parse(a.lastActivity))
     );
-    print("Loaded ${groups.length} groups"); // Debug print
+    log("Loaded ${groups.length} groups"); // Debug print
     return groups;
   }
 }

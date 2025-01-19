@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:matrix/matrix.dart';
 import 'package:grid_frontend/utilities/utils.dart';
@@ -67,13 +69,13 @@ class RoomService {
 
     // Check if the user exists
     try {
-      print(matrixUserId);
+      log(matrixUserId);
       final exists = await userService.userExists(matrixUserId);
       if (!exists) {
         return false;
       }
     } catch (e) {
-      print('User $matrixUserId does not exist: $e');
+      log('User $matrixUserId does not exist', error: e);
       return false;
     }
 
@@ -122,6 +124,7 @@ class RoomService {
         );
         return participant.membership.name;
       } catch (e) {
+        log('User not found in room', error: e);
         return 'invited';  // Default to invited if user not found
       }
     }
@@ -142,14 +145,14 @@ class RoomService {
           await room.leave();
           await client.forgetRoom(roomId); // Add this line
         } catch (e) {
-          print('Error leaving Matrix room (continuing with local cleanup): $e');
+          log('Error leaving Matrix room (continuing with local cleanup)', error: e);
         }
       }
 
       await roomRepository.leaveRoom(roomId, userId);
       return true;
     } catch (e) {
-      print('Error in leaveRoom: $e');
+      log('Error in leaveRoom', error: e);
       return false;
     }
   }
@@ -173,7 +176,7 @@ class RoomService {
       }
       return await room.getParticipants();
     } catch (e) {
-      print('Error fetching room participants: $e');
+      log('Error fetching room participants', error: e);
       rethrow;
     }
   }
@@ -200,7 +203,7 @@ class RoomService {
 
       return groupRooms;
     } catch (e) {
-      print("Error getting group rooms: $e");
+      log("Error getting group rooms", error: e);
       return [];
     }
   }
@@ -212,23 +215,23 @@ class RoomService {
       room.membership == Membership.invite).toList();
       return invitedRooms.length;
     } catch (e) {
-      print("Error fetching invites: $e");
+      log("Error fetching invites", error: e);
       return 0;
     }
   }
 
   Future<bool> acceptInvitation(String roomId) async {
     try {
-      print("Attempting to join room: $roomId");
+      log("Attempting to join room: $roomId");
 
       // Attempt to join the room
       await client.joinRoom(roomId);
-      print("Successfully joined room: $roomId");
+      log("Successfully joined room: $roomId");
 
       // Check if the room exists
       final room = client.getRoomById(roomId);
       if (room == null) {
-        print("Room not found after joining.");
+        log("Room not found after joining.");
         return false; // Invalid invite
       }
 
@@ -239,13 +242,13 @@ class RoomService {
       );
 
       if (!hasValidParticipant) {
-        print("No valid participants found, leaving the room.");
+        log("No valid participants found, leaving the room.");
         await leaveRoom(roomId);
         return false; // Invalid invite
       }
       return true; // Successfully joined
     } catch (e) {
-      print("Error during acceptInvitation: $e");
+      log("Error during acceptInvitation", error: e);
       await leaveRoom(roomId);
       return false; // Failed to join
     }
@@ -255,7 +258,7 @@ class RoomService {
     try {
       await client.leaveRoom(roomId);
     } catch (e) {
-      print("Error declining invitation: $e");
+      log("Error declining invitation", error: e);
     }
   }
 
@@ -268,7 +271,7 @@ class RoomService {
         return false;
       }
     } catch (e) {
-      print("Failed to check if room exists");
+      log("Failed to check if room exists", error: e);
       return false;
     }
   }
@@ -277,24 +280,24 @@ class RoomService {
     try {
       final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       final myUserId = client.userID;
-      print("Checking for rooms to clean at timestamp: $now");
+      log("Checking for rooms to clean at timestamp: $now");
 
       for (var room in client.rooms) {
-        print("trying to get rooms");
+        log("trying to get rooms");
         final participants = await room.getParticipants();
         bool shouldLeave = false;
         String leaveReason = '';
 
         // Check if it's a Grid room (direct or group)
         if (room.name.startsWith("Grid:")) {
-          print("Checking Grid room: ${room.name}");
+          log("Checking Grid room: ${room.name}");
 
           if (room.name.contains("Grid:Group:")) {
             // Handle group rooms
             final roomNameParts = room.name.split(":");
             if (roomNameParts.length >= 4) {
               final expirationTimestamp = int.tryParse(roomNameParts[2]) ?? 0;
-              print("Group room ${room.id} expiration: $expirationTimestamp");
+              log("Group room ${room.id} expiration: $expirationTimestamp");
 
               if (expirationTimestamp > 0 && expirationTimestamp < now) {
                 shouldLeave = true;
@@ -303,7 +306,7 @@ class RoomService {
             }
           } else if (room.name.contains("Grid:Direct:")) {
             // Handle direct rooms
-            print("Checking direct room: ${room.id} with ${participants.length} participants");
+            log("Checking direct room: ${room.id} with ${participants.length} participants");
 
             if (participants.length <= 1) {
               shouldLeave = true;
@@ -316,7 +319,7 @@ class RoomService {
           }
         } else {
           // Non-Grid rooms should be left
-          print("Found non-Grid room: ${room.name}");
+          log("Found non-Grid room: ${room.name}");
           shouldLeave = true;
           leaveReason = 'non-Grid room';
         }
@@ -331,7 +334,7 @@ class RoomService {
 
         if (shouldLeave) {
           try {
-            print("Leaving room ${room.id} (${room.name}) - Reason: $leaveReason");
+            log("Leaving room ${room.id} (${room.name}) - Reason: $leaveReason");
 
             // Perform local cleanup before leaving the room
             await _cleanupLocalData(room.id, participants);
@@ -339,24 +342,24 @@ class RoomService {
             // Leave and forget the room on the server
             await room.leave();
             await client.forgetRoom(room.id);
-            print('Successfully left and forgot room: ${room.id}');
+            log('Successfully left and forgot room: ${room.id}');
           } catch (e) {
-            print('Error leaving room ${room.id}: $e');
+            log('Error leaving room ${room.id}', error: e);
           }
         } else {
-          print("Keeping room ${room.id} (${room.name})");
+          log("Keeping room ${room.id} (${room.name})");
         }
       }
-      print("Room cleanup completed");
+      log("Room cleanup completed");
     } catch (e) {
-      print("Error during room cleanup: $e");
+      log("Error during room cleanup", error: e);
     }
   }
 
   /// Handles cleanup of local data when leaving a room
   Future<void> _cleanupLocalData(String roomId, List<User> matrixUsers) async {
     try {
-      print("Starting local cleanup for room: $roomId");
+      log("Starting local cleanup for room: $roomId");
 
       // Get all user IDs in the room before deletion
       final userIds = matrixUsers.map((p) => p.id).toList();
@@ -372,7 +375,7 @@ class RoomService {
       for (final userId in userIds) {
         // Skip if user is a direct contact
         if (directContactIds.contains(userId)) {
-          print("User $userId is a direct contact, preserving user data");
+          log("User $userId is a direct contact, preserving user data");
           // Just remove the relationship for this room
           await userRepository.removeUserRelationship(userId, roomId);
           continue;
@@ -383,13 +386,13 @@ class RoomService {
         otherRooms.remove(roomId); // Remove current room from list
 
         if (otherRooms.isEmpty) {
-          print("User $userId has no other rooms and is not a contact, cleaning up user data");
+          log("User $userId has no other rooms and is not a contact, cleaning up user data");
           // Remove user's location data
           await locationRepository.deleteUserLocations(userId);
           // Remove user and their relationships (this handles both GridUser and relationships)
           await userRepository.deleteUser(userId);
         } else {
-          print("User $userId exists in other rooms, keeping user data");
+          log("User $userId exists in other rooms, keeping user data");
           // Just remove the relationship for this room
           await userRepository.removeUserRelationship(userId, roomId);
         }
@@ -398,9 +401,9 @@ class RoomService {
       // Finally delete the room itself
       await roomRepository.deleteRoom(roomId);
 
-      print("Completed local cleanup for room: $roomId");
+      log("Completed local cleanup for room: $roomId");
     } catch (e) {
-      print("Error during local cleanup for room $roomId: $e");
+      log("Error during local cleanup for room $roomId", error: e);
       // Re-throw the error to be handled by the calling function
       rethrow;
     }
@@ -484,7 +487,7 @@ class RoomService {
       await client.setRoomTag(client.userID!, roomId, "Grid Group");
     } catch (e) {
       // Handle errors
-      print('Error creating room: $e');
+      log('Error creating room', error: e);
       return "Error";
     }
     return roomId;
@@ -493,7 +496,7 @@ class RoomService {
   void sendLocationEvent(String roomId, bg.Location location) async {
     final room = client.getRoomById(roomId);
     if (room == null || room.membership != Membership.join) {
-      print("Skipping location update for room $roomId - no longer a member");
+      log("Skipping location update for room $roomId - no longer a member");
       return;
     }
     if (room != null) {
@@ -506,7 +509,7 @@ class RoomService {
 
         // Check if the message is already sent
         if (_recentlySentMessages[roomId]?.contains(messageHash) == true) {
-          print("Duplicate location event skipped for room $roomId");
+          log("Duplicate location event skipped for room $roomId");
           return;
         }
 
@@ -521,7 +524,7 @@ class RoomService {
 
         try {
           await room.sendEvent(eventContent);
-          print("Location event sent to room $roomId: $latitude, $longitude");
+          log("Location event sent to room $roomId: $latitude, $longitude");
 
           // Track the sent message
           _recentlySentMessages.putIfAbsent(roomId, () => {}).add(messageHash);
@@ -531,13 +534,13 @@ class RoomService {
             _recentlySentMessages[roomId]!.remove(_recentlySentMessages[roomId]!.first);
           }
         } catch (e) {
-          print("Failed to send location event: $e");
+          log("Failed to send location event", error: e);
         }
       } else {
-        print("Latitude or Longitude is null");
+        log("Latitude or Longitude is null");
       }
     } else {
-      print("Room $roomId not found");
+      log("Room $roomId not found");
     }
   }
 
@@ -555,17 +558,17 @@ class RoomService {
 
   Future<void> updateRooms(bg.Location location) async {
     List<Room> rooms = client.rooms;
-    print("Grid: Found ${rooms.length} total rooms to process");
+    log("Grid: Found ${rooms.length} total rooms to process");
 
     final currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
     for (Room room in rooms) {
       try {
-        print("Grid: Processing room ${room.name} (${room.id})");
+        log("Grid: Processing room ${room.name} (${room.id})");
 
         // Skip non-Grid rooms
         if (!room.name.startsWith('Grid:')) {
-          print("Grid: Skipping non-Grid room: ${room.name}");
+          log("Grid: Skipping non-Grid room: ${room.name}");
           continue;
         }
 
@@ -577,17 +580,17 @@ class RoomService {
 
           final expirationStr = parts[2];
           final expirationTimestamp = int.tryParse(expirationStr);
-          print("Grid: Group room expiration: $expirationTimestamp, current: $currentTimestamp");
+          log("Grid: Group room expiration: $expirationTimestamp, current: $currentTimestamp");
 
           // Skip expired group rooms
           if (expirationTimestamp != null &&
               expirationTimestamp != 0 &&
               expirationTimestamp < currentTimestamp) {
-            print("Grid: Skipping expired group room");
+            log("Grid: Skipping expired group room");
             continue;
           }
         } else if (!room.name.startsWith('Grid:Direct:')) {
-          print("Grid: Skipping unknown Grid room type: ${room.name}");
+          log("Grid: Skipping unknown Grid room type: ${room.name}");
           continue;
         }
 
@@ -596,18 +599,18 @@ class RoomService {
             .getParticipants()
             .where((member) => member.membership == Membership.join)
             .toList();
-        print("Grid: Room has ${joinedMembers.length} joined members");
+        log("Grid: Room has ${joinedMembers.length} joined members");
 
         if (joinedMembers.length > 1) {
-          print("Grid: Sending location event to room ${room.id}");
+          log("Grid: Sending location event to room ${room.id}");
           sendLocationEvent(room.id, location);
-          print("Grid: Location event sent successfully");
+          log("Grid: Location event sent successfully");
         } else {
-          print("Grid: Skipping room ${room.id} - insufficient members");
+          log("Grid: Skipping room ${room.id} - insufficient members");
         }
 
       } catch (e) {
-        print('Error processing room ${room.name}: $e');
+        log('Error processing room ${room.name}', error: e);
         continue;
       }
     }
@@ -640,7 +643,7 @@ class RoomService {
       try {
         room.kick(userId);
       } catch (e) {
-        print("Failed to remove member");
+        log("Failed to remove member");
         return false;
       }
       return true;
@@ -697,11 +700,11 @@ class RoomService {
 
   Future<void> addTag(String roomId, String tag, {double? order}) async {
     try {
-      print("Attempting to add tag '$tag' to room ID $roomId");
+      log("Attempting to add tag '$tag' to room ID $roomId");
       await client.setRoomTag(client.userID!, roomId, tag, order: order);
-      print("Tag added successfully.");
+      log("Tag added successfully.");
     } catch (e) {
-      print("Failed to add tag: $e");
+      log("Failed to add tag", error: e);
     }
   }
 
@@ -711,7 +714,7 @@ class RoomService {
 
     if (curKeys == null) {
       // Log or handle cases where no keys exist for the user
-      print("No existing keys found. Inserting new keys.");
+      log("No existing keys found. Inserting new keys.");
       await userKeysRepository.upsertKeys(userId, newKeys['curve25519Key'], newKeys['ed25519Key']);
       return false; // No need to alert, as these are the first keys
     }
@@ -798,10 +801,10 @@ class RoomService {
             userRoomMap[otherMember] = room.id;
           } catch (e) {
             // Log if no other member is found.
-            print('No other member found in room: ${room.id}');
+            log('No other member found in room: ${room.id}');
             // TODO: may be causing issue with contacts screen
             await leaveRoom(room.id);
-            print('Left room: ${room.id}');
+            log('Left room: ${room.id}');
 
           }
         }
@@ -812,7 +815,7 @@ class RoomService {
         "userRoomMap": userRoomMap,
       };
     } catch (e) {
-      print("Error getting direct rooms: $e");
+      log("Error getting direct rooms", error: e);
       return {
         "users": [],
         "userRoomMap": {},

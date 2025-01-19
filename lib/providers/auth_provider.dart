@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:matrix/matrix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,7 +36,6 @@ class AuthProvider with ChangeNotifier {
   Future<void> loginWithJWT(String jwt) async {
     _isLoggedIn = true;
 
-
     final prefs = await SharedPreferences.getInstance();
     //await prefs.setBool('isLoggedIn', _isLoggedIn);
     //await prefs.setString('token', jwt);
@@ -43,7 +43,6 @@ class AuthProvider with ChangeNotifier {
     try {
       // Check if we can communicate with the Matrix server
       await client.checkHomeserver(Uri.parse(dotenv.env['MATRIX_SERVER_URL']!));
-
 
       await client.login(
         LoginType.mLoginJWT, // Use JWT login type
@@ -53,9 +52,9 @@ class AuthProvider with ChangeNotifier {
       await client.sync();
 
       final homeserver = await client.homeserver;
-      print("Logged in to: $homeserver");
+      log("Logged in to: $homeserver");
     } catch (e) {
-      print('Error initializing Matrix client with JWT: $e');
+      log('Error initializing Matrix client with JWT', error: e);
     }
 
     notifyListeners();
@@ -80,14 +79,14 @@ class AuthProvider with ChangeNotifier {
       await prefs.setString('serverType', 'default');
       await loginWithJWT(jwt);
     } catch (e) {
-      print('Failed to authenticate with JWT: $e');
+      log('Failed to authenticate with JWT', error: e);
     }
   }
 
   Future<bool> requestDeactivateAccount(String phoneNumber) async {
     var clientID = client.userID;
     if (clientID == null) {
-      print("Error");
+      log("Client ID is null");
       return false;
     }
     var curUser = localpart(clientID);
@@ -102,28 +101,26 @@ class AuthProvider with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        print("Deactivation request sent successfully");
+        log("Deactivation request sent successfully");
         return true;
       } else {
-        print("Failed to send deactivation request: ${response.body}");
+        log("Failed to send deactivation request: ${response.body}");
         return false;
       }
     } catch (e) {
-      print('Error requesting deactivation: $e');
+      log('Error requesting deactivation', error: e);
       return false;
     }
   }
-
 
   String localpart(String userId) {
     return userId.split(":").first.replaceFirst('@', '');
   }
 
-
   Future<bool> confirmDeactivateAccount(String phoneNumber, String code) async {
     var clientID = client.userID;
     if (clientID == null) {
-      print("Error");
+      log("Client ID is null");
       return false;
     }
     var username = localpart(clientID);
@@ -139,19 +136,17 @@ class AuthProvider with ChangeNotifier {
       );
 
       if (response.statusCode == 200) {
-        print("Deactivation confirmed successfully");
+        log("Deactivation confirmed successfully");
         return true;
       } else {
-        print("Failed to confirm deactivation code: ${response.body}");
+        log("Failed to confirm deactivation code: ${response.body}");
         return false;
       }
     } catch (e) {
-      print('Error verifying deactivation code: $e');
+      log('Error verifying deactivation code', error: e);
       return false;
     }
   }
-
-
 
   Future<void> verifyLoginCode(String phoneNumber, String code) async {
     try {
@@ -176,8 +171,8 @@ class AuthProvider with ChangeNotifier {
         throw Exception('Login verification failed');
       }
     } catch (e) {
-      print('Error verifying login code: $e');
-      throw e;
+      log('Error verifying login code', error: e);
+      rethrow;
     }
   }
 
@@ -205,8 +200,8 @@ class AuthProvider with ChangeNotifier {
         throw Exception('Verification failed');
       }
     } catch (e) {
-      print('Error verifying registration code: $e');
-      throw e;
+      log('Error verifying registration code', error: e);
+      rethrow;
     }
   }
 
@@ -223,14 +218,14 @@ class AuthProvider with ChangeNotifier {
 
       return response.statusCode == 200;
     } catch (e) {
-      print('Error checking username availability: $e');
+      log('Error checking username availability', error: e);
       return false;
     }
   }
 
   Future<void> sendSmsCode(String phoneNumber, {bool isLogin = false, String? username}) async {
     try {
-      print("Sending SMS for ${isLogin ? 'Login' : 'Registration'}");
+      log("Sending SMS for ${isLogin ? 'Login' : 'Registration'}");
 
       String endpoint = isLogin ? '/login' : '/register';
       Map<String, dynamic> requestBody;
@@ -254,8 +249,8 @@ class AuthProvider with ChangeNotifier {
         throw Exception('Failed to send SMS code');
       }
     } catch (e) {
-      print('Error sending SMS code: $e');
-      throw e;
+      log('Error sending SMS code', error: e);
+      rethrow;
     }
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_frontend/repositories/location_repository.dart';
 import 'package:grid_frontend/services/room_service.dart';
@@ -42,14 +44,14 @@ class ContactsBloc extends Bloc<ContactsEvent, ContactsState> {
   }
 
   Future<void> _onRefreshContacts(RefreshContacts event, Emitter<ContactsState> emit) async {
-    print("ContactsBloc: Handling RefreshContacts event");
+    log("ContactsBloc: Handling RefreshContacts event");
     try {
       final updatedContacts = await _loadContacts();
       _allContacts = updatedContacts; // Update the cache
-      print("ContactsBloc: Emitting ContactsLoaded with ${updatedContacts.length} contacts");
+      log("ContactsBloc: Emitting ContactsLoaded with ${updatedContacts.length} contacts");
       emit(ContactsLoaded(List.from(_allContacts))); // Always emit a new state
     } catch (e) {
-      print("ContactsBloc: Error in RefreshContacts - $e");
+      log("ContactsBloc: Error in RefreshContacts", error: e);
       emit(ContactsError(e.toString()));
     }
   }

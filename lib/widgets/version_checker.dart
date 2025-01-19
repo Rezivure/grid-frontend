@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -31,7 +32,7 @@ class VersionChecker {
         showOptionalUpdateDialog(context, appStoreUrl, playStoreUrl);
       }
     } catch (e) {
-      print('Version check failed: $e');
+      log('Version check failed', error: e);
     }
   }
 
@@ -49,7 +50,7 @@ class VersionChecker {
   static Future<void> launchStoreUrl(String url) async {
     try {
       final uri = Uri.parse(url);
-      print('Attempting to launch URL: $url');
+      log('Attempting to launch URL: $url');
 
       if (await canLaunchUrl(uri)) {
         final launched = await launchUrl(
@@ -58,10 +59,10 @@ class VersionChecker {
         );
 
         if (!launched) {
-          print('URL launch failed for: $url');
+          log('URL launch failed for: $url');
         }
       } else {
-        print('Cannot launch URL: $url');
+        log('Cannot launch URL: $url');
         // Fallback to browser URL
         final fallbackUrl = Platform.isIOS
             ? 'https://apps.apple.com'
@@ -72,7 +73,7 @@ class VersionChecker {
         );
       }
     } catch (e) {
-      print('Error launching URL: $e');
+      log('Error launching URL', error: e);
     }
   }
 

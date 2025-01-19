@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:matrix/matrix.dart';
@@ -148,12 +150,12 @@ class _SettingsPageState extends State<SettingsPage> {
         try {
           if (client.isLogged()) {
             await client.logout();
-            print("Logout successful");
+            log("Logout successful");
           } else {
-            print("Client already logged out");
+            log("Client already logged out");
           }
         } catch (e) {
-          print("Error during logout: $e");
+          log("Error during logout", error: e);
         }
 
 
@@ -278,19 +280,19 @@ class _SettingsPageState extends State<SettingsPage> {
       try {
         if (client.isLogged()) {
           await client.logout();
-          print("Logout successful");
+          log("Logout successful");
         } else {
-          print("Client already logged out");
+          log("Client already logged out");
         }
       } catch (e) {
-        print("Error during logout: $e");
+        log("Error during logout", error: e);
       }
 
       // Navigate the user back to the welcome screen
       Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
 
     } catch (e) {
-      print('Error during deactivation request: $e');
+      log('Error during deactivation request', error: e);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to start account deactivation process')),
       );
@@ -404,12 +406,12 @@ class _SettingsPageState extends State<SettingsPage> {
             // do nothing
           }
         } catch (e) {
-          print("error logging out post account deletion: $e");
+          log("error logging out post account deletion", error: e);
         }
 
         Navigator.pushNamedAndRemoveUntil(context, '/welcome', (route) => false);
       } else {
-        print("Failed to delete account: ${response.body}");
+        log("Failed to delete account: ${response.body}");
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to delete account: ${response.body}')),
         );

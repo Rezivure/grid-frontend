@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,7 +12,7 @@ class SelectedUserProvider with ChangeNotifier {
   String? get selectedUserId => _selectedUserId;
 
   void setSelectedUserId(String? userId, BuildContext context) {
-    print("Selected user: $userId");
+    log("Selected user: $userId");
     _selectedUserId = userId;
 
     // Trigger map navigation via MapBloc

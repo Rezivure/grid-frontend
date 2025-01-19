@@ -1,16 +1,18 @@
 
+import 'dart:developer';
+
 class MessageParser {
   Map<String, double>? parseLocationMessage(Map<String, dynamic> messageData) {
     try {
       final content = messageData['content'] as Map<String, dynamic>?;
       if (content == null || content['msgtype'] != 'm.location') {
-        print('Invalid or non-location message');
+        log('Invalid or non-location message');
         return null;
       }
 
       final geoUri = content['geo_uri'] as String?;
       if (geoUri == null || !geoUri.startsWith('geo:')) {
-        print('Invalid geo_uri format');
+        log('Invalid geo_uri format');
         return null;
       }
 
@@ -19,7 +21,7 @@ class MessageParser {
         return coordinates;
       }
     } catch (e) {
-      print('Error parsing location message: $e');
+      log('Error parsing location message', error: e);
       return null;
     }
   }

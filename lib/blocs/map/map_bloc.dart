@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
@@ -70,11 +71,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void _onRemoveUserLocation(RemoveUserLocation event, Emitter<MapState> emit) {
-    print("MapBloc: Removing location for user: ${event.userId}");
+    log("MapBloc: Removing location for user: ${event.userId}");
     final updatedLocations = state.userLocations
         .where((location) => location.userId != event.userId)
         .toList();
-    print("MapBloc: Locations before: ${state.userLocations.length}, after: ${updatedLocations.length}");
+    log("MapBloc: Locations before: ${state.userLocations.length}, after: ${updatedLocations.length}");
     emit(state.copyWith(userLocations: updatedLocations));
   }
 
@@ -98,7 +99,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       final userLocationData = await locationRepository.getLatestLocationFromHistory(event.userId);
 
       if (userLocationData != null) {
-        print("New center: ${userLocationData.position}");
+        log("New center: ${userLocationData.position}");
 
 
 
@@ -110,11 +111,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             isLoading: false
         ));
       } else {
-        print("Latest location not available for user");
+        log("Latest location not available for user");
         emit(state.copyWith(error: 'Location not available for this user.'));
       }
     } catch (e) {
-      print("Error moving to user: $e");
+      log("Error moving to user", error: e);
       emit(state.copyWith(error: 'Error moving to user location: $e'));
     }
   }

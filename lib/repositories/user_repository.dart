@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:grid_frontend/models/grid_user.dart';
 import 'package:grid_frontend/services/database_service.dart';
@@ -176,7 +178,7 @@ class UserRepository {
   /// Deletes a user and all their relationships from the database
   Future<void> deleteUser(String userId) async {
     final db = await _databaseService.database;
-    print("Deleting user $userId from database");
+    log("Deleting user $userId from database");
 
     await db.transaction((txn) async {
       // Delete from UserRelationships first (due to foreign key)
@@ -194,7 +196,7 @@ class UserRepository {
       );
     });
 
-    print("Deleted user and their relationships from database");
+    log("Deleted user and their relationships from database");
   }
 
   /// Fetches all rooms associated with a user

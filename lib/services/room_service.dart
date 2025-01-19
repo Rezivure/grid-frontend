@@ -134,7 +134,7 @@ class RoomService {
   /// Leaves a room
   Future<bool> leaveRoom(String roomId) async {
     try {
-      final userId = await getMyUserId();
+      final userId = getMyUserId();
       if (userId == null) {
         throw Exception('User ID not found');
       }
@@ -174,7 +174,7 @@ class RoomService {
       if (room == null) {
         throw Exception('Room not found');
       }
-      return await room.getParticipants();
+      return room.getParticipants();
     } catch (e) {
       log('Error fetching room participants', error: e);
       rethrow;
@@ -191,7 +191,7 @@ class RoomService {
       List<Map<String, dynamic>> groupRooms = [];
 
       for (var room in client.rooms) {
-        final participants = await room.getParticipants();
+        final participants = room.getParticipants();
         if (room.name.contains("Grid:Group") &&
             room.membership == Membership.join) {
           groupRooms.add({
@@ -236,7 +236,7 @@ class RoomService {
       }
 
       // Optionally, you can check participants
-      final participants = await room.getParticipants();
+      final participants = room.getParticipants();
       final hasValidParticipant = participants.any(
             (user) => user.membership == Membership.join && user.id != client.userID,
       );
@@ -284,7 +284,7 @@ class RoomService {
 
       for (var room in client.rooms) {
         log("trying to get rooms");
-        final participants = await room.getParticipants();
+        final participants = room.getParticipants();
         bool shouldLeave = false;
         String leaveReason = '';
 
@@ -781,7 +781,7 @@ class RoomService {
       Map<User, String> userRoomMap = {};
 
       for (var room in client.rooms) {
-        final participants = await room.getParticipants();
+        final participants = room.getParticipants();
 
         // Find the current user's membership in the room.
         final ownMembership = participants

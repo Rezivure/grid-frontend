@@ -95,7 +95,7 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
 
       // check if inviting self
       final usernameLowercase = username.toLowerCase();
-      final isSelf = (await widget.roomService.getMyUserId() == fullMatrixId);
+      final isSelf = (widget.roomService.getMyUserId() == fullMatrixId);
       if (isSelf) {
         if (mounted) {
           setState(() {

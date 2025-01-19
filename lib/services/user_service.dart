@@ -44,7 +44,7 @@ class UserService {
       final roomName2 = "Grid:Direct:$targetUserId:$effectiveUserId";
 
       if (room.name == roomName1 || room.name == roomName2) {
-        final participants = await room.getParticipants();
+        final participants = room.getParticipants();
 
         final User? userMember = participants.firstWhereOrNull(
               (user) => user.id == targetUserId,

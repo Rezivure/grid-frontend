@@ -306,8 +306,8 @@ class _SettingsPageState extends State<SettingsPage> {
     final client = Provider.of<Client>(context, listen: false);
     final sharedPreferences = await SharedPreferences.getInstance();
     final serverType = sharedPreferences.getString('serverType');
-    final homeserver = await client.homeserver;
-    final defaultHomeserver = await dotenv.env['MATRIX_SERVER_URL'];
+    final homeserver = client.homeserver;
+    final defaultHomeserver = dotenv.env['MATRIX_SERVER_URL'];
     if (serverType == 'default' || (homeserver?.toString().trim() == defaultHomeserver?.trim())) {
       _deactivateSMSAccount();
       return;

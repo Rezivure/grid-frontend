@@ -220,7 +220,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
     final homeserver = this.widget.roomService.getMyHomeserver().replaceFirst('https://', '');
     final fullMatrixId = '@$usernameLowercase:$homeserver';
     final doesExist = await this.widget.userService.userExists(fullMatrixId);
-    final isSelf = await widget.roomService.getMyUserId() == (fullMatrixId);
+    final isSelf = widget.roomService.getMyUserId() == (fullMatrixId);
 
     if (!doesExist || isSelf) {
       setState(() {

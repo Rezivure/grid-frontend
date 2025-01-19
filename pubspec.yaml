@@ -50,6 +50,9 @@ dependencies:
   package_info_plus: ^8.1.2
 
 
+  uuid: any
+  vector_tile_renderer: any
+  path: any
 flutter_launcher_icons:
   android: true
   adaptive_icon_background: "#FFFFFF"

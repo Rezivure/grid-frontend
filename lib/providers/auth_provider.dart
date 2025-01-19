@@ -51,7 +51,7 @@ class AuthProvider with ChangeNotifier {
 
       await client.sync();
 
-      final homeserver = await client.homeserver;
+      final homeserver = client.homeserver;
       log("Logged in to: $homeserver");
     } catch (e) {
       log('Error initializing Matrix client with JWT', error: e);

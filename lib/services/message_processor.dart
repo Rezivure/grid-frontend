@@ -27,7 +27,7 @@ class MessageProcessor {
       return null;
     }
     // Convert MatrixEvent to Event
-    final Event finalEvent = await Event.fromMatrixEvent(matrixEvent, room);
+    final Event finalEvent = Event.fromMatrixEvent(matrixEvent, room);
     // Decrypt the event
     final Event decryptedEvent = await encryption.decryptRoomEvent(roomId, finalEvent);
     // Check if the decrypted event is now a message

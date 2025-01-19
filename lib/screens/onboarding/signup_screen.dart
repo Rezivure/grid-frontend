@@ -214,7 +214,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         refreshToken: true,
       );
 
-      if (response.accessToken == null || response.userId == null) {
+      if (response.accessToken == null) {
         throw Exception('Access token or user ID is null after registration.');
       }
 
@@ -251,7 +251,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         refreshToken: true,
       );
 
-      if (response.accessToken == null || response.userId == null) {
+      if (response.accessToken == null) {
         throw Exception('Access token or user ID is null after registration.');
       }
 

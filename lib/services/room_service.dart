@@ -497,50 +497,42 @@ class RoomService {
       log("Skipping location update for room $roomId - no longer a member");
       return;
     }
-    if (room != null) {
-      final latitude = location.coords.latitude;
-      final longitude = location.coords.longitude;
+    final latitude = location.coords.latitude;
+    final longitude = location.coords.longitude;
 
-      if (latitude != null && longitude != null) {
-        // Create a unique hash for the location message
-        final messageHash = '$latitude:$longitude';
+    // Create a unique hash for the location message
+    final messageHash = '$latitude:$longitude';
 
-        // Check if the message is already sent
-        if (_recentlySentMessages[roomId]?.contains(messageHash) == true) {
-          log("Duplicate location event skipped for room $roomId");
-          return;
-        }
-
-        // Build the event content
-        final eventContent = {
-          'msgtype': 'm.location',
-          'body': 'Current location',
-          'geo_uri': 'geo:$latitude,$longitude',
-          'description': 'Current location',
-          'timestamp': DateTime.now().toUtc().toIso8601String(),
-        };
-
-        try {
-          await room.sendEvent(eventContent);
-          log("Location event sent to room $roomId: $latitude, $longitude");
-
-          // Track the sent message
-          _recentlySentMessages.putIfAbsent(roomId, () => {}).add(messageHash);
-
-          // Trim history if needed
-          if (_recentlySentMessages[roomId]!.length > _maxMessageHistory) {
-            _recentlySentMessages[roomId]!.remove(_recentlySentMessages[roomId]!.first);
-          }
-        } catch (e) {
-          log("Failed to send location event", error: e);
-        }
-      } else {
-        log("Latitude or Longitude is null");
-      }
-    } else {
-      log("Room $roomId not found");
+    // Check if the message is already sent
+    if (_recentlySentMessages[roomId]?.contains(messageHash) == true) {
+      log("Duplicate location event skipped for room $roomId");
+      return;
     }
-  }
+
+    // Build the event content
+    final eventContent = {
+      'msgtype': 'm.location',
+      'body': 'Current location',
+      'geo_uri': 'geo:$latitude,$longitude',
+      'description': 'Current location',
+      'timestamp': DateTime.now().toUtc().toIso8601String(),
+    };
+
+    try {
+      await room.sendEvent(eventContent);
+      log("Location event sent to room $roomId: $latitude, $longitude");
+
+      // Track the sent message
+      _recentlySentMessages.putIfAbsent(roomId, () => {}).add(messageHash);
+
+      // Trim history if needed
+      if (_recentlySentMessages[roomId]!.length > _maxMessageHistory) {
+        _recentlySentMessages[roomId]!.remove(_recentlySentMessages[roomId]!.first);
+      }
+    } catch (e) {
+      log("Failed to send location event", error: e);
+    }
+      }
 
   Future<int> getRoomMemberCount(String roomId) async {
     final room = client.getRoomById(roomId);

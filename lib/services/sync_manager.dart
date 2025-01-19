@@ -92,11 +92,9 @@ class SyncManager with ChangeNotifier {
         timeout: 15000,
       );
 
-      if (response.nextBatch != null) {
-        await _saveSinceToken(response.nextBatch);
-        _sinceToken = response.nextBatch;
-      }
-
+      await _saveSinceToken(response.nextBatch);
+      _sinceToken = response.nextBatch;
+    
       _processInitialSync(response);
       await startSync();
       _isInitialized = true; // Only set after successful completion

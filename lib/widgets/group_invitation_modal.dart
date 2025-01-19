@@ -4,7 +4,6 @@ import 'package:random_avatar/random_avatar.dart';
 import 'package:grid_frontend/services/sync_manager.dart';
 import 'package:grid_frontend/services/room_service.dart';
 import 'package:grid_frontend/components/modals/notice_continue_modal.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_frontend/blocs/groups/groups_bloc.dart';
 import 'package:grid_frontend/blocs/groups/groups_event.dart';
 import 'package:grid_frontend/blocs/map/map_bloc.dart';

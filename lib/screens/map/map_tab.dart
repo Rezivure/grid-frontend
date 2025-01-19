@@ -10,7 +10,6 @@ import 'package:vector_map_tiles_pmtiles/vector_map_tiles_pmtiles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_map_location_marker/flutter_map_location_marker.dart';
 import 'package:vector_tile_renderer/vector_tile_renderer.dart' as vector_renderer;
-import 'package:provider/provider.dart';
 
 import 'package:grid_frontend/blocs/map/map_bloc.dart';
 import 'package:grid_frontend/blocs/map/map_event.dart';

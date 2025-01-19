@@ -31,7 +31,7 @@ class UserLocationProvider with ChangeNotifier {
   // Modify getLastSeen to return the most recent timestamp
   String? getLastSeen(String userId) {
     final location = _userLocations[userId];
-    if (location == null || location.timestamp == null) return null;
+    if (location == null) return null;
 
     // Ensure the timestamp is valid
     try {

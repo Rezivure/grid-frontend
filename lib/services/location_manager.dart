@@ -150,7 +150,7 @@ class LocationManager with ChangeNotifier {
       log("Grid: Location update - speed: ${location.coords.speed.toStringAsFixed(2) ?? 'unknown'} m/s");
 
       // Update motion state based on speed (walking speed ~1.4 m/s)
-      if (location.coords.speed != null && location.coords.speed > 1.4) {
+      if (location.coords.speed > 1.4) {
         _isMoving = true;
         log("Grid: Movement detected - speed: ${location.coords.speed} m/s");
       }

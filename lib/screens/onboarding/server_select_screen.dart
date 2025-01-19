@@ -190,18 +190,18 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
                 _currentStep = 1; // Proceed to next step
               });
             }
-                : null, // Disable button if username is not available or loading
-            child: _isLoading ? CircularProgressIndicator(color: colorScheme.onPrimary) : Text(
-              'Next',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: colorScheme.onPrimary,
-              ),
-            ),
+                : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primary,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
+              ),
+            ), // Disable button if username is not available or loading
+            child: _isLoading ? CircularProgressIndicator(color: colorScheme.onPrimary) : Text(
+              'Next',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: colorScheme.onPrimary,
               ),
             ),
           ),
@@ -213,17 +213,17 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
                 _currentStep = 1; // Go to phone number step for login
               });
             },
-            child: Text(
-              'Already have an account? Sign in',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: Colors.white,
-              ),
-            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.secondary, // Secondary color
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
+              ),
+            ),
+            child: Text(
+              'Already have an account? Sign in',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: Colors.white,
               ),
             ),
           ),
@@ -322,18 +322,18 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
                 });
               }
             }
-                : null, // Disable button if loading
-            child: _isLoading ? CircularProgressIndicator(color: colorScheme.onPrimary) : Text(
-              'Send Code',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: colorScheme.onPrimary,
-              ),
-            ),
+                : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primary,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
+              ),
+            ), // Disable button if loading
+            child: _isLoading ? CircularProgressIndicator(color: colorScheme.onPrimary) : Text(
+              'Send Code',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: colorScheme.onPrimary,
               ),
             ),
           ),
@@ -471,18 +471,18 @@ class _ServerSelectScreenState extends State<ServerSelectScreen> {
                 _isLoading = false;
               });
             }
-                : null, // Disable button if loading
-            child: _isLoading ? CircularProgressIndicator(color: colorScheme.onPrimary) : Text(
-              _isLoginFlow ? 'Sign In' : 'Register',
-              style: theme.textTheme.labelLarge?.copyWith(
-                color: colorScheme.onPrimary,
-              ),
-            ),
+                : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: colorScheme.primary,
               minimumSize: const Size(double.infinity, 50),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
+              ),
+            ), // Disable button if loading
+            child: _isLoading ? CircularProgressIndicator(color: colorScheme.onPrimary) : Text(
+              _isLoginFlow ? 'Sign In' : 'Register',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: colorScheme.onPrimary,
               ),
             ),
           ),

@@ -396,11 +396,11 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                                   _isScanning = false;
                                 });
                               },
-                              child: Text('Cancel'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: colorScheme.onSurface,
                                 foregroundColor: colorScheme.surface,
-                              )
+                              ),
+                              child: Text('Cancel')
                             ),
                           ],
                         )
@@ -449,9 +449,6 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                               SizedBox(height: 20),
                               ElevatedButton(
                                 onPressed: _isProcessing ? null : _addContact,
-                                child: _isProcessing
-                                    ? CircularProgressIndicator(color: Colors.white)
-                                    : Text('Send Request'),
                                 style: ElevatedButton.styleFrom(
                                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                                   shape: RoundedRectangleBorder(
@@ -460,6 +457,9 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                                   backgroundColor: colorScheme.onSurface,
                                   foregroundColor: colorScheme.surface,
                                 ),
+                                child: _isProcessing
+                                    ? CircularProgressIndicator(color: Colors.white)
+                                    : Text('Send Request'),
                               ),
                               SizedBox(height: 20),
                               // Scan QR Code Icon
@@ -653,7 +653,6 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                                   SizedBox(width: 10),
                                   ElevatedButton(
                                     onPressed: _addMember,
-                                    child: Text('Add'),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: colorScheme.onSurface,
                                       foregroundColor: colorScheme.surface,
@@ -662,6 +661,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                                         borderRadius: BorderRadius.circular(36),
                                       ),
                                     ),
+                                    child: Text('Add'),
                                   ),
                                 ],
                               ),
@@ -721,9 +721,6 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                                     _groupNameController.text.trim().isEmpty)
                                     ? null
                                     : _createGroup,
-                                child: _isProcessing
-                                    ? CircularProgressIndicator(color: Colors.white)
-                                    : Text('Create Group'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: colorScheme.onSurface,
                                   foregroundColor: colorScheme.surface,
@@ -732,6 +729,9 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
                                     borderRadius: BorderRadius.circular(36),
                                   ),
                                 ),
+                                child: _isProcessing
+                                    ? CircularProgressIndicator(color: Colors.white)
+                                    : Text('Create Group'),
                               ),
                             ],
                           ),

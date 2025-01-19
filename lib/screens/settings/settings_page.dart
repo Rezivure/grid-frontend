@@ -97,9 +97,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget _buildAvatar(String username) {
     return CircleAvatar(
-      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1),
-      child: RandomAvatar(username, height: 80.0, width: 80.0), // Increased size
-      radius: 50,  // Slightly larger radius
+      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.1), // Increased size
+      radius: 50,
+      child: RandomAvatar(username, height: 80.0, width: 80.0),  // Slightly larger radius
     );
   }
 

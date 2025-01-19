@@ -149,17 +149,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
                   onPressed: () {
                     Navigator.pushNamed(context, '/server_select');
                   },
-                  child: Text(
-                    'Continue',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: colorScheme.onPrimary,
-                    ),
-                  ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     minimumSize: const Size(double.infinity, 50),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),
+                    ),
+                  ),
+                  child: Text(
+                    'Continue',
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ),

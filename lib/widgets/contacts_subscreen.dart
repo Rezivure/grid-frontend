@@ -164,12 +164,12 @@ class ContactsSubscreenState extends State<ContactsSubscreen> {
                           child: ListTile(
                             leading: CircleAvatar(
                               radius: 30,
+                              backgroundColor: colorScheme.primary.withOpacity(0.2),
                               child: RandomAvatar(
                                 contact.userId.split(':')[0].replaceFirst('@', ''),
                                 height: 60,
                                 width: 60,
                               ),
-                              backgroundColor: colorScheme.primary.withOpacity(0.2),
                             ),
                             title: Text(
                               contact.displayName,

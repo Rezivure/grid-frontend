@@ -190,17 +190,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   ? CircularProgressIndicator(color: colorScheme.primary)
                   : ElevatedButton(
                 onPressed: _login,
-                child: Text(
-                  'Continue',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: colorScheme.onPrimary,
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: Text(
+                  'Continue',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.onPrimary,
                   ),
                 ),
               ),

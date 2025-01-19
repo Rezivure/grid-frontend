@@ -96,11 +96,11 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
             Center(
               child: ElevatedButton(
                 onPressed: _savePreferences,
-                child: Text('Save'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary, // Corrected this line
                   foregroundColor: colorScheme.onPrimary, // Corrected this line
                 ),
+                child: Text('Save'),
               ),
             ),
           ],

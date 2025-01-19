@@ -124,17 +124,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ? CircularProgressIndicator(color: colorScheme.primary)
                   : ElevatedButton(
                 onPressed: _signUp,
-                child: Text(
-                  'Sign Up',
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: colorScheme.onPrimary, // Text color in the button
-                  ),
-                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary, // Button color
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: Text(
+                  'Sign Up',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.onPrimary, // Text color in the button
                   ),
                 ),
               ),

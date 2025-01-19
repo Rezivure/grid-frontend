@@ -62,7 +62,6 @@ class _FriendRequestModalState extends State<FriendRequestModal> {
               children: [
                 ElevatedButton(
                   onPressed: _declineRequest,
-                  child: Text('Decline', style: TextStyle(color: Colors.red)),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.surface,
                     foregroundColor: Colors.red,
@@ -72,10 +71,10 @@ class _FriendRequestModalState extends State<FriendRequestModal> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
+                  child: Text('Decline', style: TextStyle(color: Colors.red)),
                 ),
                 ElevatedButton(
                   onPressed: _acceptRequest,
-                  child: Text('Accept'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     foregroundColor: colorScheme.onPrimary,
@@ -84,6 +83,7 @@ class _FriendRequestModalState extends State<FriendRequestModal> {
                       borderRadius: BorderRadius.circular(25),
                     ),
                   ),
+                  child: Text('Accept'),
                 ),
               ],
             ),

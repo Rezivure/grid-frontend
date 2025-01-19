@@ -297,11 +297,11 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
                       _isScanning = false;
                     });
                   },
-                  child: Text('Cancel'),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.onSurface,
                     foregroundColor: colorScheme.surface,
                   ),
+                  child: Text('Cancel'),
                 ),
               ],
             )
@@ -364,9 +364,6 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
                 SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _isProcessing ? null : _addMember,
-                  child: _isProcessing
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Text('Send Request'),
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
@@ -376,6 +373,9 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
                     backgroundColor: colorScheme.onSurface,
                     foregroundColor: colorScheme.surface,
                   ),
+                  child: _isProcessing
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text('Send Request'),
                 ),
                 SizedBox(height: 20),
                 Container(

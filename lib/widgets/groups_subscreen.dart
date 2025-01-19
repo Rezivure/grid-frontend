@@ -51,8 +51,8 @@ class _GroupsSubscreenState extends State<GroupsSubscreen> {
                     ListTile(
                       leading: CircleAvatar(
                         radius: 30,
-                        child: Text('G'),
                         backgroundColor: colorScheme.primary.withOpacity(0.2),
+                        child: Text('G'),
                       ),
                       title: Text(
                         'Group Name $index',

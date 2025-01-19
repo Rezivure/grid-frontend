@@ -60,14 +60,14 @@ class UserInfoBubble extends StatelessWidget {
               ),
               SizedBox(height: 8.0),
               ElevatedButton(
-                onPressed: onClose ?? () {}, // Use the onClose callback
-                child: Text('Close'),
+                onPressed: onClose ?? () {},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary, // Use theme primary color for background
                   foregroundColor: colorScheme.onPrimary, // Use onPrimary for text color
                   padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0), // Smaller button padding
                   textStyle: TextStyle(fontSize: 14.0), // Smaller button text
-                ),
+                ), // Use the onClose callback
+                child: Text('Close'),
               )
 
             ],

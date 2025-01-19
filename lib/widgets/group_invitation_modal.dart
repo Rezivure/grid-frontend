@@ -107,7 +107,6 @@ class _GroupInvitationModalState extends State<GroupInvitationModal> {
           : [
         ElevatedButton(
           onPressed: _declineGroupInvitation,
-          child: Text('Decline', style: TextStyle(color: Colors.red)),
           style: ElevatedButton.styleFrom(
             backgroundColor: colorScheme.surface,
             foregroundColor: Colors.red,
@@ -117,10 +116,10 @@ class _GroupInvitationModalState extends State<GroupInvitationModal> {
               borderRadius: BorderRadius.circular(25),
             ),
           ),
+          child: Text('Decline', style: TextStyle(color: Colors.red)),
         ),
         ElevatedButton(
           onPressed: _acceptGroupInvitation,
-          child: Text('Accept'),
           style: ElevatedButton.styleFrom(
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,
@@ -129,6 +128,7 @@ class _GroupInvitationModalState extends State<GroupInvitationModal> {
               borderRadius: BorderRadius.circular(25),
             ),
           ),
+          child: Text('Accept'),
         ),
       ],
     );

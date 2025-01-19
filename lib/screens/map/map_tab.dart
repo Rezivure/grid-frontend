@@ -238,11 +238,11 @@ class _MapTabState extends State<MapTab> with TickerProviderStateMixin, WidgetsB
                     MaterialPageRoute(builder: (context) => SettingsPage()),
                   );
                 },
+                mini: true,
                 child: Icon(
                     Icons.menu,
                     color: isDarkMode ? colorScheme.primary : Colors.black
                 ),
-                mini: true,
               ),
             ),
 
@@ -260,11 +260,11 @@ class _MapTabState extends State<MapTab> with TickerProviderStateMixin, WidgetsB
                       _mapController.camera.zoom,
                       0,  // Set rotation to 0 (north)
                     ),
+                    mini: true,
                     child: Icon(
                         Icons.explore,
                         color: isDarkMode ? colorScheme.primary : Colors.black
                     ),
-                    mini: true,
                   ),
                   const SizedBox(height: 10),
                   FloatingActionButton(
@@ -279,13 +279,13 @@ class _MapTabState extends State<MapTab> with TickerProviderStateMixin, WidgetsB
                         _followUser = true;
                       });
                     },
+                    mini: true,
                     child: Icon(
                         Icons.my_location,
                         color: _followUser
                             ? Colors.white
                             : (isDarkMode ? colorScheme.primary : Colors.black)
                     ),
-                    mini: true,
                   ),
                 ],
               ),

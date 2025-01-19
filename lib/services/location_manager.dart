@@ -147,7 +147,7 @@ class LocationManager with ChangeNotifier {
   void _setupEventListeners() {
     // Regular location updates
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
-      log("Grid: Location update - speed: ${location.coords.speed.toStringAsFixed(2) ?? 'unknown'} m/s");
+      log("Grid: Location update - speed: ${location.coords.speed.toStringAsFixed(2)} m/s");
 
       // Update motion state based on speed (walking speed ~1.4 m/s)
       if (location.coords.speed > 1.4) {
@@ -168,7 +168,7 @@ class LocationManager with ChangeNotifier {
 
     // Motion state changes
     bg.BackgroundGeolocation.onMotionChange((bg.Location location) {
-      final isMoving = location.isMoving ?? false;
+      final isMoving = location.isMoving;
       log("Grid: Motion state changed - Moving: $isMoving");
       _isMoving = isMoving;
       _updateTrackingConfig();
@@ -203,7 +203,6 @@ class LocationManager with ChangeNotifier {
       return;
     }
 
-    final currentCoords = location.coords;
     log("Grid: Processing location update (${_isInForeground ? 'Foreground' : 'Background'}, Moving: $_isMoving)");
 
     _lastPosition = location;

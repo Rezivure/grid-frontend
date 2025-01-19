@@ -35,7 +35,7 @@ class AuthProvider with ChangeNotifier {
   Future<void> loginWithJWT(String jwt) async {
     _isLoggedIn = true;
 
-    final prefs = await SharedPreferences.getInstance();
+    // final prefs = await SharedPreferences.getInstance();
     //await prefs.setBool('isLoggedIn', _isLoggedIn);
     //await prefs.setString('token', jwt);
 

@@ -97,6 +97,7 @@ class RoomService {
           ),
         ],
       );
+      // TODO - If this if statement (line 86) passes it always returns true regardless of what createRoom returns
       return true; // success
     }
     return false; // failed
@@ -683,8 +684,8 @@ class RoomService {
 
   Future<void> updateAllUsersDeviceKeys() async {
     final rooms = client.rooms;
-    rooms.forEach((room) async => {
-      await updateUsersInRoomKeysStatus(room)
+    rooms.forEach((room) async {
+      await updateUsersInRoomKeysStatus(room);
     });
   }
 

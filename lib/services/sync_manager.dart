@@ -8,9 +8,9 @@ import 'package:grid_frontend/services/message_processor.dart';
 import 'package:grid_frontend/services/room_service.dart';
 import 'package:grid_frontend/repositories/room_repository.dart';
 import 'package:grid_frontend/repositories/user_repository.dart';
-import 'package:grid_frontend/models/room.dart' as GridRoom;
+import 'package:grid_frontend/models/room.dart' as grid_room;
 import 'package:grid_frontend/utilities/utils.dart';
-import 'package:grid_frontend/models/grid_user.dart' as GridUser;
+import 'package:grid_frontend/models/grid_user.dart' as grid_user;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:grid_frontend/providers/user_location_provider.dart';
 
@@ -228,7 +228,7 @@ class SyncManager with ChangeNotifier {
     }
   }
 
-  Future<void> _handleKickedFromRoom(GridRoom.Room room) async {
+  Future<void> _handleKickedFromRoom(grid_room.Room room) async {
     try {
       final roomId = room.roomId;
       final participants = room.members;
@@ -340,7 +340,7 @@ class SyncManager with ChangeNotifier {
         // Queue message if app is in background
         _pendingMessages.add(PendingMessage(
           roomId: roomId,
-          eventId: event.eventId ?? '',
+          eventId: event.eventId,
           event: event,
         ));
         continue;
@@ -356,7 +356,7 @@ class SyncManager with ChangeNotifier {
           // Queue message if we get keychain access error
           _pendingMessages.add(PendingMessage(
             roomId: roomId,
-            eventId: event.eventId ?? '',
+            eventId: event.eventId,
             event: event,
           ));
         } else {
@@ -530,7 +530,7 @@ class SyncManager with ChangeNotifier {
         if (membershipStatus == 'invite') {
           try {
             final profileInfo = await client.getUserProfile(event.stateKey!);
-            final gridUser = GridUser.GridUser(
+            final gridUser = grid_user.GridUser(
               userId: event.stateKey!,
               displayName: profileInfo.displayname,
               avatarUrl: profileInfo.avatarUrl?.toString(),
@@ -552,7 +552,7 @@ class SyncManager with ChangeNotifier {
         try {
           // Update or create user profile
           final profileInfo = await client.getUserProfile(event.stateKey!);
-          final gridUser = GridUser.GridUser(
+          final gridUser = grid_user.GridUser(
             userId: event.stateKey!,
             displayName: profileInfo.displayname,
             avatarUrl: profileInfo.avatarUrl?.toString(),
@@ -595,7 +595,7 @@ class SyncManager with ChangeNotifier {
         try {
           // Remove the user from room members list
           final updatedMembers = room.members.where((id) => id != userId).toList();
-          final updatedRoom = GridRoom.Room(
+          final updatedRoom = grid_room.Room(
             roomId: room.roomId,
             name: room.name,
             isGroup: room.isGroup,
@@ -689,15 +689,15 @@ class SyncManager with ChangeNotifier {
     // Check if the room already exists
     final existingRoom = await roomRepository.getRoomById(room.id);
 
-    final isDirect = isDirectRoom(room.name ?? '');
-    final customRoom = GridRoom.Room(
+    final isDirect = isDirectRoom(room.name );
+    final customRoom = grid_room.Room(
       roomId: room.id,
-      name: room.name ?? 'Unnamed Room',
+      name: room.name,
       isGroup: !isDirect,
       lastActivity: DateTime.now().toIso8601String(),
       avatarUrl: room.avatar?.toString(),
       members: room.getParticipants().map((p) => p.id).toList(),
-      expirationTimestamp: extractExpirationTimestamp(room.name ?? ''),
+      expirationTimestamp: extractExpirationTimestamp(room.name),
     );
 
     if (existingRoom == null) {
@@ -720,7 +720,7 @@ class SyncManager with ChangeNotifier {
         final profileInfo = await client.getUserProfile(participantId);
 
         // Create or update the user in the database
-        final gridUser = GridUser.GridUser(
+        final gridUser = grid_user.GridUser(
           userId: participantId,
           displayName: profileInfo.displayname,
           avatarUrl: profileInfo.avatarUrl?.toString(),
@@ -800,7 +800,7 @@ class SyncManager with ChangeNotifier {
         if (event.type == 'm.room.member' &&
             event.stateKey == client.userID &&
             event.content['membership'] == 'invite') {
-          return event.senderId ?? 'Unknown';
+          return event.senderId;
         }
       }
     }

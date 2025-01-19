@@ -24,7 +24,6 @@ class GroupsBloc extends Bloc<GroupsEvent, GroupsState> {
   final UserLocationProvider userLocationProvider;
   final MapBloc mapBloc;
   List<Room> _allGroups = [];
-  Timer? _memberUpdateDebouncer;
   bool _isUpdatingMembers = false;
 
   GroupsBloc({

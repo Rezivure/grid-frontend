@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:grid_frontend/repositories/location_repository.dart';
 import 'package:grid_frontend/utilities/message_parser.dart';
 import 'package:grid_frontend/models/user_location.dart';
@@ -18,12 +20,12 @@ class MessageProcessor {
 
   /// Process a single event from a room. Decrypt if necessary,
   /// then parse and store location messages if found.
-  /// Returns a Map<String, dynamic> representing the message if it's a `m.room.message`,
+  /// Returns a Map\<String, dynamic> representing the message if it's a `m.room.message`,
   /// or null otherwise.
   Future<Map<String, dynamic>?> processEvent(String roomId, MatrixEvent matrixEvent) async {
     final room = client.getRoomById(roomId);
     if (room == null) {
-      print("Room not found for event ${matrixEvent.eventId}");
+      log("Room not found for event ${matrixEvent.eventId}");
       return null;
     }
     // Convert MatrixEvent to Event
@@ -61,7 +63,7 @@ class MessageProcessor {
         : rawTimestamp?.toString();
 
     if (sender == null || timestamp == null) {
-      print('Invalid message sender or timestamp');
+      log('Invalid message sender or timestamp');
       return;
     }
 
@@ -76,8 +78,8 @@ class MessageProcessor {
       );
 
       await locationRepository.insertLocation(userLocation);
-      print('Location saved for user: $sender');
-      var confirm = await locationRepository.getLatestLocation(sender);
+      log('Location saved for user: $sender');
+      await locationRepository.getLatestLocation(sender);
     } else {
       // It's a message, but not a location message
     }

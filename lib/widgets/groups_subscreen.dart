@@ -7,7 +7,7 @@ import 'package:grid_frontend/widgets/custom_search_bar.dart';
 class GroupsSubscreen extends StatefulWidget {
   final ScrollController scrollController;
 
-  GroupsSubscreen({required this.scrollController});
+  const GroupsSubscreen({required this.scrollController});
 
   @override
   _GroupsSubscreenState createState() => _GroupsSubscreenState();

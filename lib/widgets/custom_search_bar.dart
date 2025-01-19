@@ -4,7 +4,7 @@ class CustomSearchBar extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
 
-  CustomSearchBar({required this.controller, this.hintText = 'Search'});
+  const CustomSearchBar({required this.controller, this.hintText = 'Search'});
 
   @override
   Widget build(BuildContext context) {

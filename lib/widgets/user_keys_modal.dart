@@ -12,7 +12,7 @@ class UserKeysModal extends StatelessWidget {
   final UserService userService;
   final UserKeysRepository userKeysRepository;
 
-  UserKeysModal({
+  const UserKeysModal({
     required this.userId,
     required this.approvedKeys,
     required this.userService,

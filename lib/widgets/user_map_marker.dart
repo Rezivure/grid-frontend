@@ -4,7 +4,7 @@ import 'package:random_avatar/random_avatar.dart';
 class UserMapMarker extends StatefulWidget {
   final String userId;
 
-  UserMapMarker({required this.userId});
+  const UserMapMarker({required this.userId});
 
   @override
   _UserMapMarkerState createState() => _UserMapMarkerState();

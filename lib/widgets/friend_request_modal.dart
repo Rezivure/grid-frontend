@@ -13,7 +13,7 @@ class FriendRequestModal extends StatefulWidget {
   final String roomId;
   final Future<void> Function() onResponse; // Callback for refreshing
 
-  FriendRequestModal({
+  const FriendRequestModal({
     required this.userId,
     required this.displayName,
     required this.roomId,

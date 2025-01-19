@@ -48,7 +48,7 @@ class UpdateMemberStatus extends GroupsEvent {
   final String userId;
   final String status;
 
-  UpdateMemberStatus(this.roomId, this.userId, this.status);
+  const UpdateMemberStatus(this.roomId, this.userId, this.status);
 
   @override
   List<Object> get props => [roomId, userId, status];

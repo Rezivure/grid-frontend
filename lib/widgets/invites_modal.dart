@@ -11,7 +11,7 @@ class InvitesModal extends StatelessWidget {
   final RoomService roomService;
   final Future<void> Function() onInviteHandled;
 
-  InvitesModal({required this.onInviteHandled, required this.roomService});
+  const InvitesModal({required this.onInviteHandled, required this.roomService});
 
   @override
   Widget build(BuildContext context) {

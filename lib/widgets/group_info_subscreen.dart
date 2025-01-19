@@ -6,7 +6,7 @@ class GroupInfoSubscreen extends StatelessWidget {
   final VoidCallback onBack;
   final ScrollController scrollController;
 
-  GroupInfoSubscreen({
+  const GroupInfoSubscreen({
     required this.groupName,
     required this.onBack,
     required this.scrollController,

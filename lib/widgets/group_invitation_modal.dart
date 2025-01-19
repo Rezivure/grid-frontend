@@ -17,7 +17,7 @@ class GroupInvitationModal extends StatefulWidget {
   final int expiration;
   final Future<void> Function() refreshCallback;
 
-  GroupInvitationModal({
+  const GroupInvitationModal({
     required this.groupName,
     required this.roomId,
     required this.inviter,

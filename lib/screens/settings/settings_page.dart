@@ -72,7 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final identityKey = client.identityKey;  // Get identity key
 
     setState(() {
-      this.deviceID = deviceId ?? 'Device ID not available';
+      deviceID = deviceId ?? 'Device ID not available';
       this.identityKey = identityKey.isNotEmpty ? identityKey : 'Identity Key not available';
     });
   }

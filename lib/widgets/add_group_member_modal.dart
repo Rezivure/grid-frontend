@@ -68,7 +68,7 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
 
 
     var usernameLowercase = username.toLowerCase();
-    final homeserver = this.widget.roomService.getMyHomeserver().replaceFirst('https://', '');
+    final homeserver = widget.roomService.getMyHomeserver().replaceFirst('https://', '');
     final fullMatrixId = '@$usernameLowercase:$homeserver';
 
     if (username.isEmpty) {

@@ -94,7 +94,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
 
 
     var usernameLowercase = username.toLowerCase();
-    final homeserver = this.widget.roomService.getMyHomeserver().replaceFirst('https://', '');
+    final homeserver = widget.roomService.getMyHomeserver().replaceFirst('https://', '');
     final normalizedUserId = '@$usernameLowercase:$homeserver';
 
     if (username.isNotEmpty) {
@@ -117,7 +117,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
         }
 
         // User exists, proceed with invitation
-        bool success = await this.widget.roomService.createRoomAndInviteContact(normalizedUserId);
+        bool success = await widget.roomService.createRoomAndInviteContact(normalizedUserId);
 
         if (success) {
           // Clear _matrixUserId after successful use
@@ -214,9 +214,9 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
     }
 
     var usernameLowercase = username.toLowerCase();
-    final homeserver = this.widget.roomService.getMyHomeserver().replaceFirst('https://', '');
+    final homeserver = widget.roomService.getMyHomeserver().replaceFirst('https://', '');
     final fullMatrixId = '@$usernameLowercase:$homeserver';
-    final doesExist = await this.widget.userService.userExists(fullMatrixId);
+    final doesExist = await widget.userService.userExists(fullMatrixId);
     final isSelf = widget.roomService.getMyUserId() == (fullMatrixId);
 
     if (!doesExist || isSelf) {

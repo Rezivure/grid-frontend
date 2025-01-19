@@ -14,7 +14,6 @@ import 'dart:convert';
 import 'package:grid_frontend/providers/auth_provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:grid_frontend/services/location_manager.dart';
 
 
 class SettingsPage extends StatefulWidget {

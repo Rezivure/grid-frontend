@@ -10,7 +10,6 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:random_avatar/random_avatar.dart';
 import 'package:grid_frontend/utilities/utils.dart';
-import 'package:grid_frontend/services/user_service.dart';
 import 'package:grid_frontend/services/room_service.dart';
 
 import '../blocs/groups/groups_bloc.dart';

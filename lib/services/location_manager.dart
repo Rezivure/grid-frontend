@@ -147,7 +147,7 @@ class LocationManager with ChangeNotifier {
   void _setupEventListeners() {
     // Regular location updates
     bg.BackgroundGeolocation.onLocation((bg.Location location) {
-      log("Grid: Location update - speed: ${location.coords.speed?.toStringAsFixed(2) ?? 'unknown'} m/s");
+      log("Grid: Location update - speed: ${location.coords.speed.toStringAsFixed(2) ?? 'unknown'} m/s");
 
       // Update motion state based on speed (walking speed ~1.4 m/s)
       if (location.coords.speed != null && location.coords.speed! > 1.4) {

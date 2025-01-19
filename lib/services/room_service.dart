@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter_background_geolocation/flutter_background_geolocation.dart' as bg;
 import 'package:matrix/matrix.dart';
-import 'package:grid_frontend/utilities/utils.dart';
 import 'package:grid_frontend/services/user_service.dart';
 import 'package:matrix/matrix_api_lite/generated/model.dart' as matrix_model;
 import 'package:grid_frontend/repositories/user_repository.dart';
@@ -11,7 +10,6 @@ import 'package:grid_frontend/repositories/room_repository.dart';
 import 'package:grid_frontend/repositories/location_repository.dart';
 import 'package:grid_frontend/repositories/sharing_preferences_repository.dart';
 import 'location_manager.dart';
-import 'package:grid_frontend/models/room.dart' as GridRoom;
 
 class RoomService {
   final UserService userService;

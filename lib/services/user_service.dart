@@ -5,7 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:matrix/matrix.dart';
 import 'package:collection/collection.dart';
 import 'package:grid_frontend/repositories/location_repository.dart';
-import 'package:grid_frontend/models/grid_user.dart';
 import 'package:grid_frontend/utilities/utils.dart';
 import 'package:http/http.dart' as http;
 

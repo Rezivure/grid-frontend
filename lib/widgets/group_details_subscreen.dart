@@ -15,7 +15,6 @@ import 'package:grid_frontend/models/grid_user.dart';
 import 'package:grid_frontend/blocs/groups/groups_bloc.dart';
 import 'package:grid_frontend/services/room_service.dart';
 import 'package:grid_frontend/repositories/user_repository.dart';
-import 'package:grid_frontend/utilities/utils.dart';
 import 'package:grid_frontend/providers/selected_user_provider.dart';
 import '../blocs/groups/groups_event.dart';
 import '../blocs/groups/groups_state.dart';

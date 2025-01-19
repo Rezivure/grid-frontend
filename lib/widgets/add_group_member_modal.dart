@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:grid_frontend/utilities/utils.dart';
 import 'package:matrix/matrix_api_lite/generated/model.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
@@ -9,9 +8,7 @@ import 'package:grid_frontend/services/user_service.dart';
 import 'package:grid_frontend/services/room_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grid_frontend/blocs/groups/groups_bloc.dart';
-import 'package:grid_frontend/blocs/groups/groups_event.dart';
 
-import '../models/grid_user.dart' as GridUser;
 
 import '../repositories/user_repository.dart';
 

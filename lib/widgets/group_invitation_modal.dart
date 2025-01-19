@@ -17,7 +17,8 @@ class GroupInvitationModal extends StatefulWidget {
   final int expiration;
   final Future<void> Function() refreshCallback;
 
-  const GroupInvitationModal({super.key, 
+  const GroupInvitationModal({
+    super.key,
     required this.groupName,
     required this.roomId,
     required this.inviter,
@@ -27,7 +28,7 @@ class GroupInvitationModal extends StatefulWidget {
   });
 
   @override
-  _GroupInvitationModalState createState() => _GroupInvitationModalState();
+  GroupInvitationModalState createState() => GroupInvitationModalState();
 }
 
 String calculateExpiryTime(int expiration) {
@@ -54,7 +55,7 @@ String calculateExpiryTime(int expiration) {
   }
 }
 
-class _GroupInvitationModalState extends State<GroupInvitationModal> {
+class GroupInvitationModalState extends State<GroupInvitationModal> {
   bool _isProcessing = false;
   late String expiry;
 
@@ -97,39 +98,38 @@ class _GroupInvitationModalState extends State<GroupInvitationModal> {
             style: TextStyle(fontSize: 14, color: Colors.grey[700]),
           ),
           SizedBox(height: 20),
-          if (_isProcessing)
-            CircularProgressIndicator()
+          if (_isProcessing) CircularProgressIndicator()
         ],
       ),
       actions: _isProcessing
           ? null
           : [
-        ElevatedButton(
-          onPressed: _declineGroupInvitation,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.surface,
-            foregroundColor: Colors.red,
-            side: BorderSide(color: Colors.red),
-            minimumSize: Size(100, 40),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-          ),
-          child: Text('Decline', style: TextStyle(color: Colors.red)),
-        ),
-        ElevatedButton(
-          onPressed: _acceptGroupInvitation,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            minimumSize: Size(100, 40),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(25),
-            ),
-          ),
-          child: Text('Accept'),
-        ),
-      ],
+              ElevatedButton(
+                onPressed: _declineGroupInvitation,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.surface,
+                  foregroundColor: Colors.red,
+                  side: BorderSide(color: Colors.red),
+                  minimumSize: Size(100, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: Text('Decline', style: TextStyle(color: Colors.red)),
+              ),
+              ElevatedButton(
+                onPressed: _acceptGroupInvitation,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
+                  minimumSize: Size(100, 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                ),
+                child: Text('Accept'),
+              ),
+            ],
     );
   }
 
@@ -229,16 +229,18 @@ class _GroupInvitationModalState extends State<GroupInvitationModal> {
       // Decline the invitation using RoomService
       await widget.roomService.declineInvitation(widget.roomId);
 
-      // Remove the invitation from SyncManager
-      Provider.of<SyncManager>(context, listen: false).removeInvite(widget.roomId);
-
       if (mounted) {
+        // Remove the invitation from SyncManager
+        Provider.of<SyncManager>(context, listen: false).removeInvite(widget.roomId);
+
         Navigator.of(context).pop(); // Close the modal
         await widget.refreshCallback(); // Trigger the callback to refresh
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Group invitation declined.")),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Group invitation declined.")),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {

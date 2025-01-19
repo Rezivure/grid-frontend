@@ -13,7 +13,8 @@ class FriendRequestModal extends StatefulWidget {
   final String roomId;
   final Future<void> Function() onResponse; // Callback for refreshing
 
-  const FriendRequestModal({super.key, 
+  const FriendRequestModal({
+    super.key,
     required this.userId,
     required this.displayName,
     required this.roomId,
@@ -113,9 +114,11 @@ class _FriendRequestModalState extends State<FriendRequestModal> {
         Navigator.of(context).pop(); // Close the modal
         await widget.onResponse(); // Execute callback to refresh any parent components
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Friend request accepted.")),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Friend request accepted.")),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -139,8 +142,10 @@ class _FriendRequestModalState extends State<FriendRequestModal> {
 
     try {
       await widget.roomService.declineInvitation(widget.roomId);
-      Provider.of<SyncManager>(context, listen: false).removeInvite(widget.roomId);
-      Navigator.of(context).pop();
+      if (mounted) {
+        Provider.of<SyncManager>(context, listen: false).removeInvite(widget.roomId);
+        Navigator.of(context).pop();
+      }
       await widget.onResponse();
 
       if (mounted) {

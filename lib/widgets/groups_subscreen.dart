@@ -10,10 +10,10 @@ class GroupsSubscreen extends StatefulWidget {
   const GroupsSubscreen({super.key, required this.scrollController});
 
   @override
-  _GroupsSubscreenState createState() => _GroupsSubscreenState();
+  GroupsSubscreenState createState() => GroupsSubscreenState();
 }
 
-class _GroupsSubscreenState extends State<GroupsSubscreen> {
+class GroupsSubscreenState extends State<GroupsSubscreen> {
   bool _showGroupDetail = false;
   String _selectedGroupName = '';
 

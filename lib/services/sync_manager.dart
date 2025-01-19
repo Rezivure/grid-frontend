@@ -93,7 +93,7 @@ class SyncManager with ChangeNotifier {
       );
 
       if (response.nextBatch != null) {
-        await _saveSinceToken(response.nextBatch!);
+        await _saveSinceToken(response.nextBatch);
         _sinceToken = response.nextBatch;
       }
 

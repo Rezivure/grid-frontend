@@ -84,7 +84,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     final currentPosition = locationManager.currentLatLng;
     if (currentPosition != null) {
       final userLocation = LatLng(
-          currentPosition.latitude!, currentPosition.longitude!);
+          currentPosition.latitude, currentPosition.longitude);
       emit(state.copyWith(center: userLocation));
     } else {
       emit(state.copyWith(error: 'No user location available'));

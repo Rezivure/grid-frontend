@@ -139,7 +139,7 @@ class _AddGroupMemberModalState extends State<AddGroupMemberModal> {
       }
 
       // Verify user exists
-      if (!await widget.userService.userExists(fullMatrixId!)) {
+      if (!await widget.userService.userExists(fullMatrixId)) {
         if (mounted) {
           setState(() {
             _contactError = 'The user $username does not exist.';

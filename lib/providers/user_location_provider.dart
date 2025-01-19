@@ -35,7 +35,7 @@ class UserLocationProvider with ChangeNotifier {
 
     // Ensure the timestamp is valid
     try {
-      DateTime.parse(location.timestamp!);
+      DateTime.parse(location.timestamp);
       return location.timestamp;
     } catch (e) {
       log("Invalid timestamp for user $userId: ${location.timestamp}");

@@ -105,7 +105,7 @@ class _AddFriendModalState extends State<AddFriendModal> with SingleTickerProvid
         });
       }
       try {
-        bool userExists = await widget.userService.userExists(normalizedUserId!);
+        bool userExists = await widget.userService.userExists(normalizedUserId);
         if (!userExists) {
           if (mounted) {
             setState(() {

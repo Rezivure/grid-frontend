@@ -218,7 +218,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         throw Exception('Access token or user ID is null after registration.');
       }
 
-      await _saveToken(response.accessToken!, response.userId!);
+      await _saveToken(response.accessToken!, response.userId);
 
       Navigator.pushReplacementNamed(context, '/main');
     } catch (e) {
@@ -255,7 +255,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         throw Exception('Access token or user ID is null after registration.');
       }
 
-      await _saveToken(response.accessToken!, response.userId!);
+      await _saveToken(response.accessToken!, response.userId);
 
       Navigator.pushReplacementNamed(context, '/main');
     } catch (e) {

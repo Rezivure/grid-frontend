@@ -20,7 +20,7 @@ class AddGroupMemberModal extends StatefulWidget {
   final UserRepository userRepository;
   final VoidCallback? onInviteSent;
 
-  const AddGroupMemberModal({required this.roomId, required this.userService, required this.roomService, required this.userRepository, required this.onInviteSent});
+  const AddGroupMemberModal({super.key, required this.roomId, required this.userService, required this.roomService, required this.userRepository, required this.onInviteSent});
 
   @override
   _AddGroupMemberModalState createState() => _AddGroupMemberModalState();

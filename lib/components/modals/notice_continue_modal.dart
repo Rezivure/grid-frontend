@@ -5,10 +5,10 @@ class NoticeContinueModal extends StatelessWidget {
   final VoidCallback? onContinue;
 
   const NoticeContinueModal({
-    Key? key,
+    super.key,
     required this.message,
     this.onContinue,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

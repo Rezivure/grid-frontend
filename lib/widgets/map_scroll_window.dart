@@ -23,7 +23,7 @@ import 'package:grid_frontend/repositories/user_repository.dart';
 import 'package:grid_frontend/repositories/room_repository.dart';
 
 class MapScrollWindow extends StatefulWidget {
-  const MapScrollWindow({Key? key}) : super(key: key);
+  const MapScrollWindow({super.key});
 
   @override
   _MapScrollWindowState createState() => _MapScrollWindowState();

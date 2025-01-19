@@ -13,10 +13,10 @@ class VersionWrapper extends StatefulWidget {
   final Client client;
 
   const VersionWrapper({
-    Key? key,
+    super.key,
     required this.child,
     required this.client,
-  }) : super(key: key);
+  });
 
   @override
   State<VersionWrapper> createState() => _VersionWrapperState();

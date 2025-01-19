@@ -8,7 +8,7 @@ import 'package:grid_frontend/services/user_service.dart';
 class ProfileModal extends StatefulWidget {
   final UserService userService;
 
-  const ProfileModal({Key? key, required this.userService}) : super(key: key);
+  const ProfileModal({super.key, required this.userService});
 
   @override
   _ProfileModalState createState() => _ProfileModalState();

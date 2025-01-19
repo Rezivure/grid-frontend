@@ -31,14 +31,14 @@ class GroupDetailsSubscreen extends StatefulWidget {
   final VoidCallback onGroupLeft;
 
   const GroupDetailsSubscreen({
-    Key? key,
+    super.key,
     required this.scrollController,
     required this.room,
     required this.onGroupLeft,
     required this.roomService,
     required this.userRepository,
     required this.userService,
-  }) : super(key: key);
+  });
 
   @override
   _GroupDetailsSubscreenState createState() => _GroupDetailsSubscreenState();

@@ -26,8 +26,8 @@ class ContactsSubscreen extends StatefulWidget {
     required this.scrollController,
     required this.roomService,
     required this.userRepository,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   ContactsSubscreenState createState() => ContactsSubscreenState();

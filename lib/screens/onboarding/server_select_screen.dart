@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import 'package:grid_frontend/providers/auth_provider.dart';
 
 class ServerSelectScreen extends StatefulWidget {
+  const ServerSelectScreen({super.key});
+
   @override
   _ServerSelectScreenState createState() => _ServerSelectScreenState();
 }

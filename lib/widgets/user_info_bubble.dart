@@ -7,7 +7,7 @@ class UserInfoBubble extends StatelessWidget {
   final LatLng position;
   final VoidCallback? onClose;
 
-  const UserInfoBubble({
+  const UserInfoBubble({super.key, 
     required this.userId,
     required this.userName,
     required this.position,

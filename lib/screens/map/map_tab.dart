@@ -25,7 +25,7 @@ import 'package:grid_frontend/services/location_manager.dart';
 
 class MapTab extends StatefulWidget {
   final LatLng? friendLocation;
-  const MapTab({this.friendLocation, Key? key}) : super(key: key);
+  const MapTab({this.friendLocation, super.key});
 
   @override
   State<MapTab> createState() => _MapTabState();

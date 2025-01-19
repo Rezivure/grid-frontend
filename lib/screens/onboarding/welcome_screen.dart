@@ -6,6 +6,8 @@ import 'dart:async';
 import 'dart:math';
 
 class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({super.key});
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }

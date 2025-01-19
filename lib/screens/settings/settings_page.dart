@@ -16,6 +16,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
+
   @override
   _SettingsPageState createState() => _SettingsPageState();
 }

@@ -21,7 +21,7 @@ class AddFriendModal extends StatefulWidget {
   final GroupsBloc groupsBloc;
   final VoidCallback? onGroupCreated;
 
-  const AddFriendModal({required this.userService, Key? key, required this.roomService, required this.groupsBloc, required this.onGroupCreated}) : super(key: key);
+  const AddFriendModal({required this.userService, super.key, required this.roomService, required this.groupsBloc, required this.onGroupCreated});
 
   @override
   _AddFriendModalState createState() => _AddFriendModalState();

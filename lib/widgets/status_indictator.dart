@@ -8,10 +8,10 @@ class StatusIndicator extends StatelessWidget {
   final String? membershipStatus;
 
   const StatusIndicator({
-    Key? key,
+    super.key,
     required this.timeAgo,
     this.membershipStatus,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

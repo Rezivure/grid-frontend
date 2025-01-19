@@ -747,7 +747,7 @@ class SyncManager with ChangeNotifier {
           log('Updating group in bloc: ${room.id}');
           groupsBloc.add(UpdateGroup(room.id));
         }
-        log('Processed user ${participantId} in room ${room.id}');
+        log('Processed user $participantId in room ${room.id}');
       } catch (e) {
         log('Error fetching profile for user $participantId', error: e);
       }

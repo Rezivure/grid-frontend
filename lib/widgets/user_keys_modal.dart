@@ -25,7 +25,7 @@ class UserKeysModal extends StatelessWidget {
 
   void approveKeys(BuildContext context) async {
     try {
-      log("attemping to approve keys for ${userId}");
+      log("attemping to approve keys for $userId");
       await userKeysRepository.updateApprovedKeys(userId, true);
 
       // Notify the parent widget that keys were approved
